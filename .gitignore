@@ -1,1 +1,4 @@
 *.exe
+*.dll
+buscaminas/lib/
+buscaminas/include/SDL2
