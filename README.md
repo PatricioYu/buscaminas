@@ -46,4 +46,6 @@ Nivel intermedio: 16 × 16 casillas y 40 minas.
 Nivel experto: 16 × 30 casillas y 99 minas.
 
 Nivel personalizado: en este caso el usuario personaliza su juego eligiendo el número de minas y el tamaño de la cuadrícula.
->>>>>>> daeed6945148438a1716d96849e99fc198bb488d
+
+# Buscaminas Pipeline
+![alt text](https://cdn.discordapp.com/attachments/756557461934309521/988948941884227706/buscaminaspipeline.png)
