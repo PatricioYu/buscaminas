@@ -1,4 +1,4 @@
-#include <headers/game.h>
+#include <headers/game.hpp>
 #include <SDL2/SDL.h>
 #include <iostream>
 

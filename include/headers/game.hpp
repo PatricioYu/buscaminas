@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "headers/entity.hpp"
 
 enum class GameState {PLAY, EXIT};
 
@@ -11,6 +12,12 @@ class Game {
         Game();
         ~Game();
 
+        SDL_Texture* loadTexture(const char* filePath);
+
+        void cleanUp();
+        void clear();
+        void render(Entity& entity);
+        void display();
         void run();
     
     private:
