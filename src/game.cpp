@@ -2,7 +2,6 @@
 #include "headers/game.hpp"
 #include "headers/entity.hpp"
 
-
 Game::Game() {
     window = nullptr;
     renderer = nullptr;
@@ -68,12 +67,27 @@ void Game::display() {
 }
 
 void Game::gameLoop() {
-    SDL_Texture* minaTexture = loadTexture("res/img/mina-blanca.png");
+    int n = 10;
+    int m = 40;
 
+    SDL_Texture* minaTexture = loadTexture("res/img/mina-blanca.png");
+    SDL_Texture* casillaTexture = loadTexture("res/img/Casilla.png");
+    
     /*Entity minas[3] = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}};*/
 
     std::vector<Entity> minas = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}, {96,0,minaTexture}};
+    
+    //Creo la matriz de casillas
+    std::vector<Entity> casillas[n][m];
 
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            Entity casilla(32 * j, 32 * i, casillaTexture);
+            casillas[i][j].push_back(casilla);
+        }
+    }
+    
+    
     /* Generacion de 10 minas al azar
     for(int i = 0; i < 10; ++i) {
         
@@ -84,7 +98,15 @@ void Game::gameLoop() {
         handleEvents();
 
         clear();
-
+        
+        for(int i = 0; i<n; i++){
+            for(int j=0; j<m; j++){
+                for(Entity& p : casillas[i][j]) {
+                    render(p);
+                }        
+            }
+        }
+        
         for(Entity& e : minas) {
             render(e);
         }
