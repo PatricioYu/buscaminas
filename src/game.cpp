@@ -26,6 +26,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
      
     icon = IMG_Load("res/img/mina.png");
     SDL_SetWindowIcon(window, icon);
+
 }
 
 SDL_Texture* Game::loadTexture(const char* filePath) {
@@ -125,21 +126,15 @@ void Game::handleEvents() {
         // std::cout << "Game exited" << std::endl;
             break;
             evnt.type = SDL_MOUSEBUTTONUP;
-        case SDL_MOUSEBUTTONUP:
-            int x, y;
-            Uint32 buttons;
-            SDL_PumpEvents();  // make sure we have the latest mouse state.
-            buttons = SDL_GetMouseState(&x, &y);
-            std::cout << "Cursor at x: " << x << std::endl;
-            std::cout << "Cursor at y: " << y << std::endl;
-
-            if(evnt.button.button == SDL_BUTTON_LEFT) {      /*Diferenciar entre click derecho e izquierdo*/
-                std::cout << "click" << std::endl;
+        case SDL_MOUSEBUTTONUP:                             
+            if(evnt.button.button == SDL_BUTTON_LEFT){      /*Diferenciar entre click derecho e izquierdo*/
+            std::cout << "click" << std::endl;
             }
-            if(evnt.button.button == SDL_BUTTON_RIGHT) {     /*Derecho para poner las banderas*/
-                std::cout << "clock" << std::endl;
+            if(evnt.button.button == SDL_BUTTON_RIGHT){     /*Derecho para poner las banderas*/
+            std::cout << "clock" << std::endl;
             }
             break;
+
     }
 
 }
