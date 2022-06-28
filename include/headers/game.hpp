@@ -34,6 +34,8 @@ class Game {
 
         int screenWidth;
         int screenHeight;
+        int f;
+        int c;
 
         GameState gameState;
 };
