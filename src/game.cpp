@@ -6,7 +6,7 @@
 Game::Game() {
     window = nullptr;
     renderer = nullptr;
-    screenWidth = 1024;
+    screenWidth = 1280;
     screenHeight = 600;
     gameState = GameState::PLAY;
 };
@@ -68,26 +68,43 @@ void Game::display() {
 }
 
 void Game::gameLoop() {
+    int n = 10;
+    int m = 40;
+
     SDL_Texture* minaTexture = loadTexture("res/img/mina-blanca.png");
+    SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
 
     /*Entity minas[3] = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}};*/
 
-    std::vector<Entity> minas = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}, {96,0,minaTexture}};
-
+    // std::vector<Entity> minas = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}, {96,0,minaTexture}};
+    std::vector<Entity> casillas[n][m];
     /* Generacion de 10 minas al azar
     for(int i = 0; i < 10; ++i) {
-        
     }
     */
+    for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                Entity casilla(32 * j, 32 * i, casillaTexture);
+                casillas[i][j].push_back(casilla);
+        }
+    }        
 
     while (gameState != GameState::EXIT) {
         handleEvents();
 
         clear();
 
-        for(Entity& e : minas) {
-            render(e);
+        for(int i = 0; i<n; i++){
+            for(int j=0; j<m; j++){
+                for(Entity& c : casillas[i][j]) {
+                    render(c);
+                }
+            }
         }
+
+        /*for(Entity& e : minas) {
+            render(e);
+        }*/
         // rendereverything();
         display();
     }
@@ -106,8 +123,11 @@ void Game::handleEvents() {
         case SDL_MOUSEBUTTONUP:
             int x, y;
             Uint32 buttons;
+
             SDL_PumpEvents();  // make sure we have the latest mouse state.
+
             buttons = SDL_GetMouseState(&x, &y);
+
             std::cout << "Cursor at x: " << x << std::endl;
             std::cout << "Cursor at y: " << y << std::endl;
 
