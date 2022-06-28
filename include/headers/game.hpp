@@ -8,6 +8,7 @@
 enum class GameState {PLAY, EXIT};
 
 class Game {
+    
     public:
         Game();
         ~Game();
@@ -19,6 +20,8 @@ class Game {
         void render(Entity& entity);
         void display();
         void run();
+        void firstClick();
+        void bombasAleat();
     
     private:
         void init(const char* title, int x, int y, int w, int h, Uint32 flags);

@@ -1,6 +1,12 @@
 #include <vector>
 #include "headers/game.hpp"
 #include "headers/entity.hpp"
+#include "time.h"
+
+/*Publicas*/
+int n = 10,
+m = 40;
+
 
 Game::Game() {
     window = nullptr;
@@ -67,9 +73,9 @@ void Game::display() {
     SDL_RenderPresent(renderer);
 }
 
+
 void Game::gameLoop() {
-    int n = 10;
-    int m = 40;
+
 
     SDL_Texture* minaTexture = loadTexture("res/img/MinaN.png");
     SDL_Texture* casillaTexture = loadTexture("res/img/Casilla.png");
@@ -108,14 +114,15 @@ void Game::gameLoop() {
             }
         }
         
-        for(Entity& e : minas) {
+/*         for(Entity& e : minas) {
             render(e);
-        }
+        } */
         // rendereverything();
         display();
     }
 }
 
+bool primerClick = false;
 void Game::handleEvents() {
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
@@ -128,7 +135,6 @@ void Game::handleEvents() {
             evnt.type = SDL_MOUSEBUTTONUP;
         case SDL_MOUSEBUTTONUP:
             int x, y;
-            bool primerClick = false;
             Uint32 buttons;
             SDL_PumpEvents();  // make sure we have the latest mouse state.
             buttons = SDL_GetMouseState(&x, &y);
@@ -139,12 +145,58 @@ void Game::handleEvents() {
 
             if(evnt.button.button == SDL_BUTTON_LEFT) {      /*Diferenciar entre click derecho e izquierdo*/
                 std::cout << "click" << std::endl;
-                
+                if(!primerClick){
+                    firstClick();
+                }
             }
             if(evnt.button.button == SDL_BUTTON_RIGHT) {     /*Derecho para poner las banderas*/
                 std::cout << "clock" << std::endl;
             }
             break;
     }
+
+}
+
+void Game::firstClick(){
+    std::cout << "First Click" << std::endl;
+    primerClick = true;
+    bombasAleat();
+}
+
+void Game::bombasAleat(){
+    int b = 10;
+
+    SDL_Texture* minaTexture = loadTexture("res/img/MinaN.png");
+    int FX, FY;
+    Uint32 buttons;
+    SDL_PumpEvents();                       /*Reemplazar con parametros*/
+    buttons = SDL_GetMouseState(&FX, &FY);  /*las coordenadas del primer click que las pase "firstClick" y las tome "bombasAleat"*/
+    std::cout << "Position" << std::endl;
+    std::cout << "Y = " << FY/32 
+    << std::endl << "X = " << FX/32
+    << std::endl;                           /*Imprime coordenadas*/
+    
+    srand(time(NULL));
+
+    std::vector<int> bombPosX[n];
+    std::vector<int> bombPosY[m];
+    std::vector<int> bombPos[n][m];
+
+    for(int i=0; i < b; ++i){
+
+    bombPosX[i].push_back(rand() % m + 1);
+    }
+    for(int i=0;i<b; ++i){
+    bombPosY[i].push_back(rand() % n + 1);
+    }
+
+    for(int i=0; i < b; ++i){
+        std::cout << "Bomba " << i 
+        << std::endl << "X = " << bombPosX[i][0]
+        << std::endl << "Y = " << bombPosX[i][0]
+        << std::endl;
+    }
+        /*Genera*/
+
 
 }
