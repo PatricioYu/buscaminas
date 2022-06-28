@@ -3,3 +3,4 @@
 .vscode/*
 lib/*
 include/SDL2/*
+.gimpArchives/*

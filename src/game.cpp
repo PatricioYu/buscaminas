@@ -6,7 +6,7 @@
 /*Publicas*/
 int n = 10,
 m = 40;
-
+bool primerClick = false;
 
 Game::Game() {
     window = nullptr;
@@ -122,7 +122,6 @@ void Game::gameLoop() {
     }
 }
 
-bool primerClick = false;
 void Game::handleEvents() {
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
@@ -171,6 +170,7 @@ void Game::bombasAleat(){
     Uint32 buttons;
     SDL_PumpEvents();                       /*Reemplazar con parametros*/
     buttons = SDL_GetMouseState(&FX, &FY);  /*las coordenadas del primer click que las pase "firstClick" y las tome "bombasAleat"*/
+    
     std::cout << "Position" << std::endl;
     std::cout << "Y = " << FY/32 
     << std::endl << "X = " << FX/32
@@ -182,21 +182,19 @@ void Game::bombasAleat(){
     std::vector<int> bombPosY[m];
     std::vector<int> bombPos[n][m];
 
-    for(int i=0; i < b; ++i){
-
+for(int i=0; i < b; ++i){
     bombPosX[i].push_back(rand() % m + 1);
-    }
-    for(int i=0;i<b; ++i){
-    bombPosY[i].push_back(rand() % n + 1);
-    }
+}
 
-    for(int i=0; i < b; ++i){
+for(int i=0;i<b; ++i){
+    bombPosY[i].push_back(rand() % n + 1);
+}
+
+for(int i=0; i < b; ++i){
         std::cout << "Bomba " << i 
         << std::endl << "X = " << bombPosX[i][0]
         << std::endl << "Y = " << bombPosY[i][0]
         << std::endl;
-    }
-        /*Genera*/
-
-
+}
+        /*Genera 10 bombas aleatorias*/
 }
