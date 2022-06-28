@@ -101,5 +101,8 @@ void Game::handleEvents() {
         gameState = GameState::EXIT;
         // std::cout << "Game exited" << std::endl;
             break;
+        case SDL_MOUSEBUTTONUP:
+            std::cout << "click" << std::endl;
+            
     }
 }
