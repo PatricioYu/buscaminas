@@ -71,7 +71,7 @@ void Game::gameLoop() {
     int n = 10;
     int m = 40;
 
-    SDL_Texture* minaTexture = loadTexture("res/img/mina-blanca.png");
+    SDL_Texture* minaTexture = loadTexture("res/img/MinaN.png");
     SDL_Texture* casillaTexture = loadTexture("res/img/Casilla.png");
     
     /*Entity minas[3] = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}};*/
@@ -126,15 +126,25 @@ void Game::handleEvents() {
         // std::cout << "Game exited" << std::endl;
             break;
             evnt.type = SDL_MOUSEBUTTONUP;
-        case SDL_MOUSEBUTTONUP:                             
-            if(evnt.button.button == SDL_BUTTON_LEFT){      /*Diferenciar entre click derecho e izquierdo*/
-            std::cout << "click" << std::endl;
+        case SDL_MOUSEBUTTONUP:
+            int x, y;
+            bool primerClick = false;
+            Uint32 buttons;
+            SDL_PumpEvents();  // make sure we have the latest mouse state.
+            buttons = SDL_GetMouseState(&x, &y);
+            std::cout << "Cursor at y: " << y/32 << std::endl;
+            std::cout << "Cursor at x: " << x/32 << std::endl;  
+            /*Sabiendo que las imagenes son de 32 pixeles simplemente tenemos que dividir x e y por 32 para que nos de una coordenada coherente*/
+
+
+            if(evnt.button.button == SDL_BUTTON_LEFT) {      /*Diferenciar entre click derecho e izquierdo*/
+                std::cout << "click" << std::endl;
+                
             }
-            if(evnt.button.button == SDL_BUTTON_RIGHT){     /*Derecho para poner las banderas*/
-            std::cout << "clock" << std::endl;
+            if(evnt.button.button == SDL_BUTTON_RIGHT) {     /*Derecho para poner las banderas*/
+                std::cout << "clock" << std::endl;
             }
             break;
-
     }
 
 }
