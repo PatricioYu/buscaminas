@@ -2,6 +2,7 @@
 #include "headers/game.hpp"
 #include "headers/entity.hpp"
 
+
 Game::Game() {
     window = nullptr;
     renderer = nullptr;
@@ -71,7 +72,7 @@ void Game::gameLoop() {
 
     /*Entity minas[3] = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}};*/
 
-    std::vector<Entity> minas = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}};
+    std::vector<Entity> minas = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}, {96,0,minaTexture}};
 
     /* Generacion de 10 minas al azar
     for(int i = 0; i < 10; ++i) {
@@ -101,8 +102,17 @@ void Game::handleEvents() {
         gameState = GameState::EXIT;
         // std::cout << "Game exited" << std::endl;
             break;
+            evnt.type = SDL_MOUSEBUTTONUP;
         case SDL_MOUSEBUTTONUP:
+            if(evnt.button.button == SDL_BUTTON_LEFT){      /*Diferenciar entre click derecho e izquierdo*/
             std::cout << "click" << std::endl;
+            }
+            if(evnt.button.button == SDL_BUTTON_RIGHT){     /*Derecho para poner las banderas*/
+            std::cout << "clock" << std::endl;
+            }
+            break;
+
             
     }
+
 }
