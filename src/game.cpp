@@ -23,6 +23,9 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
     renderer = SDL_CreateRenderer(window, -1, 0);
+     
+    icon = IMG_Load("res/img/mina.png");
+    SDL_SetWindowIcon(window, icon);
 }
 
 SDL_Texture* Game::loadTexture(const char* filePath) {
