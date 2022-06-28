@@ -1,6 +1,6 @@
-#include <headers/game.hpp>
-#include <SDL2/SDL.h>
 #include <iostream>
+#include <SDL2/SDL.h>
+#include "headers/game.hpp"
 
 int main(int argc, char* argv[]) {
     Game game;

@@ -31,5 +31,5 @@ class Game {
         int screenWidth;
         int screenHeight;
 
-        GameState _gameState;
+        GameState gameState;
 };

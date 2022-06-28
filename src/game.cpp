@@ -1,3 +1,4 @@
+#include <vector>
 #include "headers/game.hpp"
 #include "headers/entity.hpp"
 
@@ -6,12 +7,12 @@ Game::Game() {
     renderer = nullptr;
     screenWidth = 1024;
     screenHeight = 600;
-    _gameState = GameState::PLAY;
+    gameState = GameState::PLAY;
 };
 Game::~Game() {};
 
 void Game::run() {
-    init("Buscaminas", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+    init("Buscaminas", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_FULLSCREEN_DESKTOP);
     gameLoop();
 }
 
@@ -65,13 +66,25 @@ void Game::display() {
 void Game::gameLoop() {
     SDL_Texture* minaTexture = loadTexture("res/img/mina-blanca.png");
 
-    Entity mina(0, 0, minaTexture);
+    /*Entity minas[3] = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}};*/
 
-    while (_gameState != GameState::EXIT) {
+    std::vector<Entity> minas = {{0, 0, minaTexture}, {32, 0, minaTexture}, {64, 0, minaTexture}};
+
+    /* Generacion de 10 minas al azar
+    for(int i = 0; i < 10; ++i) {
+        
+    }
+    */
+
+    while (gameState != GameState::EXIT) {
         handleEvents();
 
         clear();
-        render(mina);
+
+        for(Entity& e : minas) {
+            render(e);
+        }
+        // rendereverything();
         display();
     }
 }
@@ -82,7 +95,8 @@ void Game::handleEvents() {
 
     switch(evnt.type) {
         case SDL_QUIT:
-        _gameState = GameState::EXIT;
+        gameState = GameState::EXIT;
+        // std::cout << "Game exited" << std::endl;
             break;
     }
 }
