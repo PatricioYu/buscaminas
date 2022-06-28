@@ -28,7 +28,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     };
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
      
     icon = IMG_Load("res/img/mina.png");
     SDL_SetWindowIcon(window, icon);
@@ -193,7 +193,7 @@ void Game::bombasAleat(){
     for(int i=0; i < b; ++i){
         std::cout << "Bomba " << i 
         << std::endl << "X = " << bombPosX[i][0]
-        << std::endl << "Y = " << bombPosX[i][0]
+        << std::endl << "Y = " << bombPosY[i][0]
         << std::endl;
     }
         /*Genera*/
