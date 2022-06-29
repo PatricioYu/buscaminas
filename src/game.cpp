@@ -1,7 +1,7 @@
 #include <vector>
+#include <time.h>
 #include "headers/game.hpp"
 #include "headers/entity.hpp"
-#include "time.h"
 
 // Constructor de la clase Game
 Game::Game() {
@@ -11,6 +11,7 @@ Game::Game() {
     screenHeight = 600;
     f = 10;    // cantidad de filas
     c = 40;    // cantidad de columnas
+    firstClick = false;
     gameState = GameState::PLAY;
 };
 Game::~Game() {};    // Destructor de la clase Game   
@@ -26,11 +27,40 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     };
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
      
     icon = IMG_Load("res/img/mina.png");
     SDL_SetWindowIcon(window, icon);
+}
 
+void Game::gameLoop() {
+    SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
+    SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
+    
+    //Creo la matriz de casillas
+    std::vector<Entity> casillas[f][c];
+
+    for(int i=0; i<f; i++){
+        for(int j=0; j<c; j++){
+            Entity casilla(32 * j, 32 * i, casillaTexture);
+            casillas[i][j].push_back(casilla);
+        }
+    }
+
+    while (gameState != GameState::EXIT) {
+        handleEvents();
+        clear();
+        
+        for(int i = 0; i<f; i++){
+            for(int j=0; j<c; j++){
+                for(Entity& casilla : casillas[i][j]) {
+                    render(casilla);
+                }        
+            }
+        }
+
+        display();
+    }
 }
 
 SDL_Texture* Game::loadTexture(const char* filePath) {
@@ -71,38 +101,16 @@ void Game::display() {
     SDL_RenderPresent(renderer);
 }
 
+Pos getClickPos() {
+    Pos clickPos;
+    Uint32 buttons;
 
-void Game::gameLoop() {
-    SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
-    SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
-    
-    //Creo la matriz de casillas
-    std::vector<Entity> casillas[f][c];
+    SDL_PumpEvents();  // make sure we have the latest mouse state
 
-    for(int i=0; i<f; i++){
-        for(int j=0; j<c; j++){
-            Entity casilla(32 * j, 32 * i, casillaTexture);
-            casillas[i][j].push_back(casilla);
-        }
-    }
+    buttons = SDL_GetMouseState(&clickPos.x, &clickPos.y);
 
-    while (gameState != GameState::EXIT) {
-        handleEvents();
-        clear();
-        
-        for(int i = 0; i<f; i++){
-            for(int j=0; j<c; j++){
-                for(Entity& p : casillas[i][j]) {
-                    render(p);
-                }        
-            }
-        }
-
-        display();
-    }
+    return clickPos;
 }
-
-bool primerClick = false;
 
 void Game::handleEvents() {
     SDL_Event evnt;
@@ -110,25 +118,21 @@ void Game::handleEvents() {
 
     switch(evnt.type) {
         case SDL_QUIT:
+            cleanUp();
             gameState = GameState::EXIT;
-            // std::cout << "Game exited" << std::endl;
+
             break;
         case SDL_MOUSEBUTTONUP:
-            int x, y;
-            Uint32 buttons;
+            Pos clickPos = getClickPos();
 
-            SDL_PumpEvents();  // make sure we have the latest mouse state.
-
-            buttons = SDL_GetMouseState(&x, &y);
             // Sabiendo que las imagenes son de 32 pixeles simplemente tenemos que dividir x e y por 32 para que nos de una coordenada coherente
-            std::cout << "Cursor at y: " << y/32 << std::endl;
-            std::cout << "Cursor at x: " << x/32 << std::endl;  
-
+            std::cout << "Cursor at x: " << clickPos.x/32 << std::endl;  
+            std::cout << "Cursor at y: " << clickPos.y/32 << std::endl;
 
             if(evnt.button.button == SDL_BUTTON_LEFT) {      // Click izquierdo
                 std::cout << "click" << std::endl;
-                if(!primerClick){
-                    firstClick();
+                if(!firstClick){
+                    onFirstClick();
                 }
             }
             if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
@@ -137,27 +141,24 @@ void Game::handleEvents() {
 
             break;
     }
-
 }
 
-void Game::firstClick(){
+void Game::onFirstClick(){
+    Pos firstClickPos = getClickPos();
+
+    firstClick = true;
     std::cout << "First Click" << std::endl;
-    primerClick = true;
-    bombasAleat();
+
+    // std::cout << "FirstClickCursor at x: " << firstClickPos.x/32 << std::endl;  
+    // std::cout << "FirstClickCursor at y: " << firstClickPos.y/32 << std::endl;
+
+    bombasAleat(firstClickPos);
 }
 
-void Game::bombasAleat(){
+void Game::bombasAleat(Pos){
     int b = 10;
 
     SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
-    int FX, FY;
-    Uint32 buttons;
-    SDL_PumpEvents();                       /*Reemplazar con parametros*/
-    buttons = SDL_GetMouseState(&FX, &FY);  /*las coordenadas del primer click que las pase "firstClick" y las tome "bombasAleat"*/
-    std::cout << "Position" << std::endl;
-    std::cout << "Y = " << FY/32 
-    << std::endl << "X = " << FX/32
-    << std::endl;                           /*Imprime coordenadas*/
     
     srand(time(NULL));
 
@@ -165,20 +166,17 @@ void Game::bombasAleat(){
     std::vector<int> bombPosY[c];
     std::vector<int> bombPos[f][c];
 
-    for(int i=0; i < b; ++i){
+    for(int i=0; i < b; ++i) {
         bombPosX[i].push_back(rand() % c + 1);
     }
-    for(int i = 0; i < b; ++i){
+    for(int i = 0; i < b; ++i) {
         bombPosY[i].push_back(rand() % f + 1);
     }
 
-    for(int i=0; i < b; ++i){
+    for(int i=0; i < b; ++i) {
         std::cout << "Bomba " << i 
         << std::endl << "X = " << bombPosX[i][0]
-        << std::endl << "Y = " << bombPosX[i][0]
+        << std::endl << "Y = " << bombPosY[i][0]
         << std::endl;
     }
-        /*Genera*/
-
-
 }
