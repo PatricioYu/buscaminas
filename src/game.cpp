@@ -155,11 +155,11 @@ void Game::onFirstClick(){
     bombasAleat(firstClickPos);
 }
 
-void Game::bombasAleat(Pos){
+void Game::bombasAleat(Pos) {
     int b = 10;
 
     SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
-    
+
     srand(time(NULL));
 
     std::vector<int> bombPosX[f];
@@ -173,7 +173,7 @@ void Game::bombasAleat(Pos){
         bombPosY[i].push_back(rand() % f + 1);
     }
 
-    for(int i=0; i < b; ++i) {
+for(int i=0; i < b; ++i){
         std::cout << "Bomba " << i 
         << std::endl << "X = " << bombPosX[i][0]
         << std::endl << "Y = " << bombPosY[i][0]
