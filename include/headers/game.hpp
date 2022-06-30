@@ -26,7 +26,7 @@ class Game {
         Pos getClickedPos();
         void onFirstClick();
         void bombasAleat(Pos);
-
+        void numCasilla();
     private:
         void init(const char* title, int x, int y, int w, int h, Uint32 flags);
         void gameLoop();

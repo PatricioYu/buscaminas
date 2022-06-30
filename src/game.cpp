@@ -134,6 +134,7 @@ void Game::handleEvents() {
                 if(!firstClick){
                     onFirstClick();
                 }
+                numCasilla();
             }
             if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 std::cout << "clock" << std::endl;
@@ -178,5 +179,60 @@ for(int i=0; i < b; ++i){
         << std::endl << "X = " << bombPosX[i][0]
         << std::endl << "Y = " << bombPosY[i][0]
         << std::endl;
+    }
+}
+
+void Game::numCasilla(){
+    int cont = 0;
+    //casillas[clickPos.x/32][clickPos.y/32]
+    if(casillas[clickPos.x/32 + 1][clickPos.y/32].bomb == true){
+        cont += 1;
+    }
+    if(casillas[clickPos.x/32 - 1][clickPos.y/32].bomb == true){
+        cont += 1;
+    }
+    if(casillas[clickPos.x/32][clickPos.y/32 + 1].bomb == true){
+        cont += 1;
+    }
+    if(casillas[clickPos.x/32][clickPos.y/32 - 1].bomb == true){
+        cont += 1;
+    }
+    if(casillas[clickPos.x/32 + 1][clickPos.y/32 + 1].bomb == true){
+        cont += 1;
+    }
+    if(casillas[clickPos.x/32 + 1][clickPos.y/32 - 1].bomb == true){
+        cont += 1;
+    }
+    if(casillas[clickPos.x/32 - 1][clickPos.y/32 + 1].bomb == true){
+        cont += 1;
+    }
+    if(casillas[clickPos.x/32 - 1][clickPos.y/32 - 1].bomb == true){
+        cont += 1;
+    }
+    switch(cont){
+        case 1:
+            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum1;
+            break;
+        case 2:
+            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum2;
+            break;
+        case 3:
+            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum3;
+            break;
+        case 4:
+            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum4;
+            break;
+        case 5:
+            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum5;
+            break;
+        case 6:
+            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum6;
+            break;
+        case 7:
+            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum7;
+            break;
+        case 8:
+            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum8;
+            break;
     }
 }
