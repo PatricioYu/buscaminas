@@ -31,34 +31,35 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
      
     icon = IMG_Load("res/img/mina.png");
     SDL_SetWindowIcon(window, icon);
+
 }
 
 void Game::gameLoop() {
+    
     SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
     SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
+
     
     //Creo la matriz de casillas
-    std::vector<Entity> casillas[f][c];
-
+    
     for(int i=0; i<f; i++){
+        std::vector<Entity> casilla;
         for(int j=0; j<c; j++){
-            Entity casilla(32 * j, 32 * i, casillaTexture);
-            casillas[i][j].push_back(casilla);
+            Entity casilla1(32 * j, 32 * i, casillaTexture); 
+            casilla.push_back(casilla1);
         }
+        casillas.push_back(casilla);
     }
-
+    
     while (gameState != GameState::EXIT) {
         handleEvents();
         clear();
         
         for(int i = 0; i<f; i++){
             for(int j=0; j<c; j++){
-                for(Entity& casilla : casillas[i][j]) {
-                    render(casilla);
-                }        
+                render(casillas[i][j]);
             }
         }
-
         display();
     }
 }
@@ -134,10 +135,18 @@ void Game::handleEvents() {
                 if(!firstClick){
                     onFirstClick();
                 }
-                numCasilla();
+                //numCasilla();
             }
             if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 std::cout << "clock" << std::endl;
+/*                 casillas[clickPos.x/32 ][clickPos.y/32].tex=bandera.png; */
+                SDL_Texture* banderaTexture = loadTexture("res/img/bandera.png");
+
+                Entity bandera(32, 32, banderaTexture);
+                clear();
+                render(bandera);
+                display();
+                
             }
 
             break;
@@ -182,6 +191,8 @@ for(int i=0; i < b; ++i){
     }
 }
 
+
+/*
 void Game::numCasilla(){
     int cont = 0;
     //casillas[clickPos.x/32][clickPos.y/32]
@@ -235,4 +246,4 @@ void Game::numCasilla(){
             casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum8;
             break;
     }
-}
+}*/
