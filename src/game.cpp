@@ -139,16 +139,20 @@ void Game::handleEvents() {
             }
             if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 std::cout << "clock" << std::endl;
-/*                 casillas[clickPos.x/32 ][clickPos.y/32].tex=bandera.png; */
+                bool bandera = false;
+                SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
                 SDL_Texture* banderaTexture = loadTexture("res/img/bandera.png");
 
-                Entity bandera(32, 32, banderaTexture);
-                clear();
-                render(bandera);
-                display();
-                
-            }
+                if(casillas[clickPos.y/32][clickPos.x/32].bandera == true){
+                    casillas[clickPos.y/32][clickPos.x/32].tex = casillaTexture;
+                    casillas[clickPos.y/32][clickPos.x/32].bandera = false;
+                }
+                else if(casillas[clickPos.y/32][clickPos.x/32].bandera == false){
+                    casillas[clickPos.y/32][clickPos.x/32].tex = banderaTexture;
+                    casillas[clickPos.y/32][clickPos.x/32].bandera = true;    
+                }
 
+            }
             break;
     }
 }
@@ -168,8 +172,6 @@ void Game::onFirstClick(){
 void Game::bombasAleat(Pos) {
     int b = 10;
 
-    SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
-
     srand(time(NULL));
 
     std::vector<int> bombPosX[f];
@@ -178,9 +180,14 @@ void Game::bombasAleat(Pos) {
 
     for(int i=0; i < b; ++i) {
         bombPosX[i].push_back(rand() % c + 1);
-    }
-    for(int i = 0; i < b; ++i) {
         bombPosY[i].push_back(rand() % f + 1);
+        if(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == false){
+            casillas[bombPosY[i][0]][bombPosX[i][0]].bomb = true;
+        }
+        else{
+            //si es true que recalcule la posicion de la bomba
+        }
+        
     }
 
 for(int i=0; i < b; ++i){
