@@ -37,7 +37,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 void Game::gameLoop() {
     
     SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
-    SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
+    SDL_Texture* casillaTexture = loadTexture("res/img/minesweeper_casilla.png");
 
     
     //Creo la matriz de casillas
@@ -135,13 +135,13 @@ void Game::handleEvents() {
                 if(!firstClick){
                     onFirstClick();
                 }
-                //numCasilla();
+                //numCasilla(clickPos);
             }
             if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 std::cout << "clock" << std::endl;
                 bool bandera = false;
-                SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
-                SDL_Texture* banderaTexture = loadTexture("res/img/bandera.png");
+                SDL_Texture* casillaTexture = loadTexture("res/img/minesweeper_casilla.png");
+                SDL_Texture* banderaTexture = loadTexture("res/img/minesweeper_banderilla.png");
 
                 if(casillas[clickPos.y/32][clickPos.x/32].bandera == true){
                     casillas[clickPos.y/32][clickPos.x/32].tex = casillaTexture;
@@ -186,6 +186,11 @@ void Game::bombasAleat(Pos) {
         }
         else{
             //si es true que recalcule la posicion de la bomba
+            while(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == true){
+                bombPosX[i][0] = rand() % c + 1;
+                bombPosY[i][0] = rand() % f + 1;
+            }
+            casillas[bombPosY[i][0]][bombPosX[i][0]].bomb = true;
         }
         
     }
@@ -199,58 +204,61 @@ for(int i=0; i < b; ++i){
 }
 
 
-/*
-void Game::numCasilla(){
+
+/*void Game::numCasilla(Pos clickPos){
     int cont = 0;
-    //casillas[clickPos.x/32][clickPos.y/32]
-    if(casillas[clickPos.x/32 + 1][clickPos.y/32].bomb == true){
+    SDL_Texture* casilla1Texture = loadTexture("res/img/minesweeper1.png");
+    SDL_Texture* casilla2Texture = loadTexture("res/img/minesweeper2.png");
+    SDL_Texture* casilla3Texture = loadTexture("res/img/minesweeper3.png");
+
+    if(casillas[(clickPos.y/32) + 1][clickPos.x/32].bomb == true){
         cont += 1;
     }
-    if(casillas[clickPos.x/32 - 1][clickPos.y/32].bomb == true){
+    if(casillas[(clickPos.y/32) - 1][clickPos.x/32].bomb == true){
         cont += 1;
     }
-    if(casillas[clickPos.x/32][clickPos.y/32 + 1].bomb == true){
+    if(casillas[clickPos.y/32][(clickPos.x/32) + 1].bomb == true){
         cont += 1;
     }
-    if(casillas[clickPos.x/32][clickPos.y/32 - 1].bomb == true){
+    if(casillas[clickPos.y/32][(clickPos.x/32) - 1].bomb == true){
         cont += 1;
     }
-    if(casillas[clickPos.x/32 + 1][clickPos.y/32 + 1].bomb == true){
+    if(casillas[(clickPos.y/32) + 1][(clickPos.x/32) + 1].bomb == true){
         cont += 1;
     }
-    if(casillas[clickPos.x/32 + 1][clickPos.y/32 - 1].bomb == true){
+    if(casillas[(clickPos.y/32) + 1][(clickPos.x/32) - 1].bomb == true){
         cont += 1;
     }
-    if(casillas[clickPos.x/32 - 1][clickPos.y/32 + 1].bomb == true){
+    if(casillas[(clickPos.y/32) - 1][(clickPos.x/32) + 1].bomb == true){
         cont += 1;
     }
-    if(casillas[clickPos.x/32 - 1][clickPos.y/32 - 1].bomb == true){
+    if(casillas[(clickPos.y/32) - 1][(clickPos.x/32) - 1].bomb == true){
         cont += 1;
     }
     switch(cont){
         case 1:
-            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum1;
+            casillas[clickPos.y/32][clickPos.x/32].tex = casilla1Texture;
             break;
         case 2:
-            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum2;
+            casillas[clickPos.y/32][clickPos.x/32].tex = casilla2Texture;
             break;
         case 3:
-            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum3;
+            casillas[clickPos.y/32][clickPos.x/32].tex = casilla3Texture;
             break;
         case 4:
-            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum4;
+            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum4;
             break;
         case 5:
-            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum5;
+            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum5;
             break;
         case 6:
-            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum6;
+            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum6;
             break;
         case 7:
-            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum7;
+            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum7;
             break;
         case 8:
-            casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum8;
+            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum8;
             break;
     }
 }*/
