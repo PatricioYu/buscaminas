@@ -1,6 +1,4 @@
 *.exe
-*.dll
-.vscode/*
-lib/*
-include/SDL2/*
+include/headers
 .gimpArchives/*
+*.src

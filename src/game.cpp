@@ -7,10 +7,10 @@
 Game::Game() {
     window = nullptr;
     renderer = nullptr;
-    screenWidth = 1024;
-    screenHeight = 600;
+    screenWidth = 1280;
+    screenHeight = 320;
     f = 10;    // cantidad de filas
-    c = 40;    // cantidad de columnas
+    c = 10;    // cantidad de columnas
     firstClick = false;
     gameState = GameState::PLAY;
 };
@@ -134,7 +134,7 @@ void Game::handleEvents() {
                 if(!firstClick){
                     onFirstClick();
                 }
-                numCasilla();
+                //numCasilla();
             }
             if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 std::cout << "clock" << std::endl;
@@ -150,8 +150,8 @@ void Game::onFirstClick(){
     firstClick = true;
     std::cout << "First Click" << std::endl;
 
-    // std::cout << "FirstClickCursor at x: " << firstClickPos.x/32 << std::endl;  
-    // std::cout << "FirstClickCursor at y: " << firstClickPos.y/32 << std::endl;
+     std::cout << "FirstClickCursor at x: " << firstClickPos.x/32 << std::endl;  
+     std::cout << "FirstClickCursor at y: " << firstClickPos.y/32 << std::endl;
 
     bombasAleat(firstClickPos);
 }
@@ -181,7 +181,7 @@ for(int i=0; i < b; ++i){
         << std::endl;
     }
 }
-
+/*
 void Game::numCasilla(){
     int cont = 0;
     //casillas[clickPos.x/32][clickPos.y/32]
@@ -235,4 +235,4 @@ void Game::numCasilla(){
             casillas[clickPos.x/32][clickPos.y/32].tex = texturaNum8;
             break;
     }
-}
+}*/
