@@ -37,7 +37,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 void Game::gameLoop() {
     
     SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
-    SDL_Texture* casillaTexture = loadTexture("res/img/minesweeper_casilla.png");
+    SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
 
     
     //Creo la matriz de casillas
@@ -135,12 +135,12 @@ void Game::handleEvents() {
                 if(!firstClick){
                     onFirstClick();
                 }
-                //numCasilla(clickPos);
+                numCasilla(clickPos);
             }
             if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 std::cout << "clock" << std::endl;
                 bool bandera = false;
-                SDL_Texture* casillaTexture = loadTexture("res/img/minesweeper_casilla.png");
+                SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
                 SDL_Texture* banderaTexture = loadTexture("res/img/minesweeper_banderilla.png");
 
                 if(casillas[clickPos.y/32][clickPos.x/32].bandera == true){
@@ -171,7 +171,7 @@ void Game::onFirstClick(){
 
 void Game::bombasAleat(Pos) {
     int b = 10;
-
+    SDL_Texture* minaTexture = loadTexture("res/img/minesweeper_mina_blanca.png");
     srand(time(NULL));
 
     std::vector<int> bombPosX[f];
@@ -179,18 +179,20 @@ void Game::bombasAleat(Pos) {
     std::vector<int> bombPos[f][c];
 
     for(int i=0; i < b; ++i) {
-        bombPosX[i].push_back(rand() % c + 1);
-        bombPosY[i].push_back(rand() % f + 1);
+        bombPosX[i].push_back(rand() % c);
+        bombPosY[i].push_back(rand() % f);
         if(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == false){
             casillas[bombPosY[i][0]][bombPosX[i][0]].bomb = true;
+            casillas[bombPosY[i][0]][bombPosX[i][0]].tex = minaTexture;
         }
         else{
             //si es true que recalcule la posicion de la bomba
             while(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == true){
-                bombPosX[i][0] = rand() % c + 1;
-                bombPosY[i][0] = rand() % f + 1;
+                bombPosX[i][0] = rand() % c;
+                bombPosY[i][0] = rand() % f;
             }
             casillas[bombPosY[i][0]][bombPosX[i][0]].bomb = true;
+            casillas[bombPosY[i][0]][bombPosX[i][0]].tex = minaTexture;
         }
         
     }
@@ -205,8 +207,9 @@ for(int i=0; i < b; ++i){
 
 
 
-/*void Game::numCasilla(Pos clickPos){
+void Game::numCasilla(Pos clickPos){
     int cont = 0;
+    SDL_Texture* casillavaciaTexture = loadTexture("res/img/minesweeper_casilla.png");
     SDL_Texture* casilla1Texture = loadTexture("res/img/minesweeper1.png");
     SDL_Texture* casilla2Texture = loadTexture("res/img/minesweeper2.png");
     SDL_Texture* casilla3Texture = loadTexture("res/img/minesweeper3.png");
@@ -236,6 +239,9 @@ for(int i=0; i < b; ++i){
         cont += 1;
     }
     switch(cont){
+        case 0:
+            casillas[clickPos.y/32][clickPos.x/32].tex = casillavaciaTexture;
+            break;
         case 1:
             casillas[clickPos.y/32][clickPos.x/32].tex = casilla1Texture;
             break;
@@ -245,7 +251,7 @@ for(int i=0; i < b; ++i){
         case 3:
             casillas[clickPos.y/32][clickPos.x/32].tex = casilla3Texture;
             break;
-        case 4:
+        /*case 4:
             casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum4;
             break;
         case 5:
@@ -259,6 +265,6 @@ for(int i=0; i < b; ++i){
             break;
         case 8:
             casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum8;
-            break;
+            break;*/
     }
-}*/
+}
