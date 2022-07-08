@@ -31,14 +31,31 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
      
     icon = IMG_Load("res/img/mina.png");
     SDL_SetWindowIcon(window, icon);
+    
+   
 
 }
 
+
+
 void Game::gameLoop() {
+
+     //Music
+    int init2 = Mix_Init(0);
     
     SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
     SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
 
+      Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT, 2, 1024);
+    Mix_Music* music = Mix_LoadMUS("res/audio/brasil.wav");
+    /*if(!music){
+
+        cout <<"Music Error"<<Mix_GetError()<<endl;
+
+    }*/
+    //Mix_Chunk * sound = Mix_LoadWAV("");
+    
+    Mix_PlayMusic(music, -1);
     
     //Creo la matriz de casillas
     
