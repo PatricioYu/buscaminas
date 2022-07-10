@@ -355,4 +355,5 @@ void Game::renderMenu(EntityMenu& entityMenu) {
     dst.h = entityMenu.getCurrentFrame().h;
     
     SDL_RenderCopy(renderer, entityMenu.getTex(), &src, &dst);
+
 }
