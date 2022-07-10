@@ -9,7 +9,7 @@ class Entity {
         SDL_Texture* tex;
         bool bandera = false;
         bool bomb = false;
-        int cont=0;
+        int cont = 0;
         float getX();
         float getY();
         SDL_Rect getCurrentFrame();

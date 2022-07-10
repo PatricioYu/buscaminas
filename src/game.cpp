@@ -190,11 +190,10 @@ void Game::bombasAleat(Pos) {
     int b = 10;
     SDL_Texture* minaTexture = loadTexture("res/img/minesweeper_mina_blanca.png");
     srand(time(NULL));
-
-    std::vector<int> bombPosX[f];
-    std::vector<int> bombPosY[c];
-    std::vector<int> bombPos[f][c];
-
+    std::vector<int> bombPosX[c];
+    std::vector<int> bombPosY[f];
+    std::vector<int> bombPos[c][f];
+    
     for(int i=0; i < b; ++i) {
         bombPosX[i].push_back(rand() % c);
         bombPosY[i].push_back(rand() % f);
@@ -202,7 +201,10 @@ void Game::bombasAleat(Pos) {
             casillas[bombPosY[i][0]][bombPosX[i][0]].bomb = true;
             casillas[bombPosY[i][0]][bombPosX[i][0]].tex = minaTexture;
         }
-        else{
+        else if(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == true){
+            std::cout << i << "if " << std::endl;        
+            bombPosX[i][0] = rand() % c;
+            bombPosY[i][0] = rand() % f;
             //si es true que recalcule la posicion de la bomba
             while(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == true){
                 bombPosX[i][0] = rand() % c;
@@ -210,8 +212,17 @@ void Game::bombasAleat(Pos) {
             }
             casillas[bombPosY[i][0]][bombPosX[i][0]].bomb = true;
             casillas[bombPosY[i][0]][bombPosX[i][0]].tex = minaTexture;
+            
         }
         
+        numero_casilla(bombPosX[i][0] - 1, bombPosY[i][0]);
+        numero_casilla(bombPosX[i][0] + 1, bombPosY[i][0]);
+        numero_casilla(bombPosX[i][0], bombPosY[i][0] - 1);
+        numero_casilla(bombPosX[i][0], bombPosY[i][0] + 1);
+        numero_casilla(bombPosX[i][0] - 1, bombPosY[i][0] - 1);
+        numero_casilla(bombPosX[i][0] - 1, bombPosY[i][0] + 1);
+        numero_casilla(bombPosX[i][0] + 1, bombPosY[i][0] - 1);
+        numero_casilla(bombPosX[i][0] + 1, bombPosY[i][0] + 1);
     }
 
 for(int i=0; i < b; ++i){
@@ -221,43 +232,35 @@ for(int i=0; i < b; ++i){
         << std::endl;
     }
 }
-
-
-
+void Game::numero_casilla(int x, int y){
+    if(x >= 0 && x <= c && y >= 0 && y <= f && casillas[y][x].bomb != true){
+        casillas[y][x].cont++;
+    }
+}
+// si las bombas son mas de 12 crashea (30) y si en numcasillas() llamo a dos numCasillas() tambien 
 void Game::numCasilla(Pos clickPos){
-    int cont = 0;
     SDL_Texture* casillavaciaTexture = loadTexture("res/img/minesweeper_casilla.png");
     SDL_Texture* casilla1Texture = loadTexture("res/img/minesweeper1.png");
     SDL_Texture* casilla2Texture = loadTexture("res/img/minesweeper2.png");
     SDL_Texture* casilla3Texture = loadTexture("res/img/minesweeper3.png");
 
-    if(casillas[(clickPos.y/32) + 1][clickPos.x/32].bomb == true){
-        cont += 1;
-    }
-    if(casillas[(clickPos.y/32) - 1][clickPos.x/32].bomb == true){
-        cont += 1;
-    }
-    if(casillas[clickPos.y/32][(clickPos.x/32) + 1].bomb == true){
-        cont += 1;
-    }
-    if(casillas[clickPos.y/32][(clickPos.x/32) - 1].bomb == true){
-        cont += 1;
-    }
-    if(casillas[(clickPos.y/32) + 1][(clickPos.x/32) + 1].bomb == true){
-        cont += 1;
-    }
-    if(casillas[(clickPos.y/32) + 1][(clickPos.x/32) - 1].bomb == true){
-        cont += 1;
-    }
-    if(casillas[(clickPos.y/32) - 1][(clickPos.x/32) + 1].bomb == true){
-        cont += 1;
-    }
-    if(casillas[(clickPos.y/32) - 1][(clickPos.x/32) - 1].bomb == true){
-        cont += 1;
-    }
-    switch(cont){
+    switch(casillas[clickPos.y/32][clickPos.x/32].cont){
         case 0:
             casillas[clickPos.y/32][clickPos.x/32].tex = casillavaciaTexture;
+            if(clickPos.x/32 > 0 && clickPos.x/32 < c && clickPos.y/32 > 0 && clickPos.y/32 < f){
+                Pos llamada;
+                Pos envio;
+                llamada.x = clickPos.x;
+                llamada.y = clickPos.y;
+                //numCasilla(envio = {llamada.x + 32, llamada.y});
+                //numCasilla(envio = {llamada.x - 32, llamada.y});
+                //numCasilla(llamada = {llamada.x, llamada.y + 32});
+                //numCasilla(llamada = {llamada.x, llamada.y - 32});
+                //numCasilla(llamada = {llamada.x + 32, llamada.y + 32});
+                //numCasilla(llamada = {llamada.x + 32, llamada.y - 32});
+                //numCasilla(llamada = {llamada.x - 32, llamada.y + 32});
+                //numCasilla(llamada = {llamada.x - 32, llamada.y - 32});
+            }
             break;
         case 1:
             casillas[clickPos.y/32][clickPos.x/32].tex = casilla1Texture;
