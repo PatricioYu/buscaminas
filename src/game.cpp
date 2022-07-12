@@ -5,6 +5,7 @@
 #include "headers/menu.hpp"
 #include "headers/menu.hpp"
 
+
 // Constructor de la clase Game
 Game::Game() {
     window = nullptr;
@@ -187,48 +188,45 @@ void Game::onFirstClick(){
 }
 
 void Game::bombasAleat(Pos) {
-    int b = 10;
+    int b = 30;
     SDL_Texture* minaTexture = loadTexture("res/img/minesweeper_mina_blanca.png");
     srand(time(NULL));
-    std::vector<int> bombPosX[c];
-    std::vector<int> bombPosY[f];
-    std::vector<int> bombPos[c][f];
+    std::vector<int> bombPosX;
+    std::vector<int> bombPosY;
     
     for(int i=0; i < b; ++i) {
-        bombPosX[i].push_back(rand() % c);
-        bombPosY[i].push_back(rand() % f);
-        if(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == false){
-            casillas[bombPosY[i][0]][bombPosX[i][0]].bomb = true;
-            casillas[bombPosY[i][0]][bombPosX[i][0]].tex = minaTexture;
+        bombPosX.push_back(rand() % c);
+        bombPosY.push_back(rand() % f);       
+        if(casillas[bombPosY[i]][bombPosX[i]].bomb == false){
+            casillas[bombPosY[i]][bombPosX[i]].bomb = true;
+            casillas[bombPosY[i]][bombPosX[i]].tex = minaTexture;
         }
-        else if(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == true){
-            std::cout << i << "if " << std::endl;        
-            bombPosX[i][0] = rand() % c;
-            bombPosY[i][0] = rand() % f;
+        else if(casillas[bombPosY[i]][bombPosX[i]].bomb == true){     
+            bombPosX[i] = rand() % c;
+            bombPosY[i] = rand() % f;
             //si es true que recalcule la posicion de la bomba
-            while(casillas[bombPosY[i][0]][bombPosX[i][0]].bomb == true){
-                bombPosX[i][0] = rand() % c;
-                bombPosY[i][0] = rand() % f;
+            while(casillas[bombPosY[i]][bombPosX[i]].bomb == true){
+                bombPosX[i] = rand() % c;
+                bombPosY[i] = rand() % f;
             }
-            casillas[bombPosY[i][0]][bombPosX[i][0]].bomb = true;
-            casillas[bombPosY[i][0]][bombPosX[i][0]].tex = minaTexture;
-            
+            casillas[bombPosY[i]][bombPosX[i]].bomb = true;
+            casillas[bombPosY[i]][bombPosX[i]].tex = minaTexture;
         }
         
-        numero_casilla(bombPosX[i][0] - 1, bombPosY[i][0]);
-        numero_casilla(bombPosX[i][0] + 1, bombPosY[i][0]);
-        numero_casilla(bombPosX[i][0], bombPosY[i][0] - 1);
-        numero_casilla(bombPosX[i][0], bombPosY[i][0] + 1);
-        numero_casilla(bombPosX[i][0] - 1, bombPosY[i][0] - 1);
-        numero_casilla(bombPosX[i][0] - 1, bombPosY[i][0] + 1);
-        numero_casilla(bombPosX[i][0] + 1, bombPosY[i][0] - 1);
-        numero_casilla(bombPosX[i][0] + 1, bombPosY[i][0] + 1);
+        numero_casilla(bombPosX[i] - 1, bombPosY[i]);
+        numero_casilla(bombPosX[i] + 1, bombPosY[i]);
+        numero_casilla(bombPosX[i], bombPosY[i] - 1);
+        numero_casilla(bombPosX[i], bombPosY[i] + 1);
+        numero_casilla(bombPosX[i] - 1, bombPosY[i] - 1);
+        numero_casilla(bombPosX[i] - 1, bombPosY[i] + 1);
+        numero_casilla(bombPosX[i] + 1, bombPosY[i] - 1);
+        numero_casilla(bombPosX[i] + 1, bombPosY[i] + 1);
     }
 
 for(int i=0; i < b; ++i){
         std::cout << "Bomba " << i 
-        << std::endl << "X = " << bombPosX[i][0]
-        << std::endl << "Y = " << bombPosY[i][0]
+        << std::endl << "X = " << bombPosX[i]
+        << std::endl << "Y = " << bombPosY[i]
         << std::endl;
     }
 }
@@ -249,11 +247,15 @@ void Game::numCasilla(Pos clickPos){
             casillas[clickPos.y/32][clickPos.x/32].tex = casillavaciaTexture;
             if(clickPos.x/32 > 0 && clickPos.x/32 < c && clickPos.y/32 > 0 && clickPos.y/32 < f){
                 Pos llamada;
-                Pos envio;
+                //Pos envio;
                 llamada.x = clickPos.x;
                 llamada.y = clickPos.y;
-                //numCasilla(envio = {llamada.x + 32, llamada.y});
-                //numCasilla(envio = {llamada.x - 32, llamada.y});
+                numCasilla(llamada = {llamada.x + 32, llamada.y});
+                //std::cout<<"ejecutado1"<<std::endl;
+                //numCasilla(llamada = {llamada.x - 32, llamada.y});
+                //std::cout<<"ejecutado2"<<std::endl;
+                
+                //std::cout<<"ejecutado2"<<std::endl;
                 //numCasilla(llamada = {llamada.x, llamada.y + 32});
                 //numCasilla(llamada = {llamada.x, llamada.y - 32});
                 //numCasilla(llamada = {llamada.x + 32, llamada.y + 32});
@@ -286,6 +288,9 @@ void Game::numCasilla(Pos clickPos){
         case 8:
             casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum8;
             break;*/
+        default:
+            casillas[clickPos.y/32][clickPos.x/32].tex = casillavaciaTexture;
+            break;
     }
 }
 

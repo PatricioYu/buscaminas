@@ -44,7 +44,6 @@ class Game {
         SDL_Renderer* renderer;
         SDL_Surface* icon;
 
-
         int screenWidth;
         int screenHeight;
         int f;
