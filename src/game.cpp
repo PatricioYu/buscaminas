@@ -61,7 +61,7 @@ void Game::gameLoop() {
     Mix_PlayMusic(music, -1);
     */
 
- 
+    menu();
 
     //Creo la matriz de casillas
     for(int i=0; i<f; i++){
