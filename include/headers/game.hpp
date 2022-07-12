@@ -47,4 +47,5 @@ class Game {
         bool firstClick;
         std::vector<std::vector<Entity>> casillas;
         GameState gameState;
+      
 };
