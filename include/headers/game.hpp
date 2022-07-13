@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include "headers/entity.hpp"
 #include "headers/menu.hpp"
 #include <vector>
@@ -14,7 +15,6 @@ typedef struct {
 } Pos;
 
 class Game {
-
     public:
         Game();
         ~Game();
@@ -30,12 +30,12 @@ class Game {
         void bombasAleat(Pos);
         void numero_casilla(int x, int y);
         void numCasilla(Pos clickPos);
-        
     private:
         void init(const char* title, int x, int y, int w, int h, Uint32 flags);
         void gameLoop();
         void handleEvents();
         void cleanUp();
+        void cleanMusic();
         //menu
         void menuHandleEvents();
         void dificultad(Pos clickPos);
@@ -54,5 +54,4 @@ class Game {
         bool firstClick;
         std::vector<std::vector<Entity>> casillas;
         GameState gameState;
-      
 };
