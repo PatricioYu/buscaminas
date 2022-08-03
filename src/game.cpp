@@ -3,8 +3,6 @@
 #include <SDL2/SDL_mixer.h>
 #include "headers/game.hpp"
 #include "headers/menu.hpp"
-#include "headers/menu.hpp"
-
 
 // Constructor de la clase Game
 Game::Game() {
@@ -36,13 +34,10 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     SDL_SetWindowIcon(window, icon);
 
     //Inicio Audio
-     SDL_Init(SDL_INIT_AUDIO);
+    SDL_Init(SDL_INIT_AUDIO);
 
     //Inicio SDL mixer
-     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-    
-    
-
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
 
 void Game::gameLoop() {
@@ -51,19 +46,14 @@ void Game::gameLoop() {
     Mix_Music* backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
 
     //Volumen de la musica
-    Mix_VolumeMusic (20);
+    Mix_VolumeMusic(20);
 
     //Se reproduce la musica de fondo
     Mix_PlayMusic(backgroundMusic, -1);
 
-   
-    
-
     SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
     SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
 
-
-    
     menu();
 
     //Creo la matriz de casillas
@@ -89,7 +79,6 @@ void Game::gameLoop() {
     }
 }
 
-
 SDL_Texture* Game::loadTexture(const char* filePath) {
     SDL_Texture* texture = NULL;
     texture = IMG_LoadTexture(renderer, filePath);
@@ -99,7 +88,6 @@ SDL_Texture* Game::loadTexture(const char* filePath) {
 
     return texture;
 }
-
 
 void Game::cleanUp() {
     SDL_DestroyWindow(window);
@@ -116,7 +104,6 @@ void Game::clear() {
     SDL_RenderClear(renderer);
     
 }
-
 
 void Game::render(Entity& entity) {
     SDL_Rect src;
@@ -187,7 +174,6 @@ void Game::handleEvents() {
                     casillas[clickPos.y/32][clickPos.x/32].tex = banderaTexture;
                     casillas[clickPos.y/32][clickPos.x/32].bandera = true;    
                 }
-
             }
             break;
     }
@@ -241,15 +227,12 @@ void Game::bombasAleat(Pos) {
         numero_casilla(bombPosX[i] + 1, bombPosY[i] + 1);
     }
 
-for(int i=0; i < b; ++i){
-        std::cout << "Bomba " << i 
-        << std::endl << "X = " << bombPosX[i]
-        << std::endl << "Y = " << bombPosY[i]
-        << std::endl;
+    for(int i=0; i < b; ++i) {
+        std::cout << "Bomba " << i << std::endl << "X = " << bombPosX[i] << std::endl << "Y = " << bombPosY[i] << std::endl;
     }
 }
 void Game::numero_casilla(int x, int y){
-    if(x >= 0 && x <= c && y >= 0 && y <= f && casillas[y][x].bomb != true){
+    if(x >= 0 && x < c && y >= 0 && y < f && casillas[y][x].bomb != true) {
         casillas[y][x].cont++;
     }
 }
@@ -260,7 +243,7 @@ void Game::numCasilla(Pos clickPos){
     SDL_Texture* casilla2Texture = loadTexture("res/img/minesweeper2.png");
     SDL_Texture* casilla3Texture = loadTexture("res/img/minesweeper3.png");
 
-    switch(casillas[clickPos.y/32][clickPos.x/32].cont){
+    switch(casillas[clickPos.y/32][clickPos.x/32].cont) {
         case 0:
             casillas[clickPos.y/32][clickPos.x/32].tex = casillavaciaTexture;
             if(clickPos.x/32 > 0 && clickPos.x/32 < c && clickPos.y/32 > 0 && clickPos.y/32 < f){
@@ -312,7 +295,7 @@ void Game::numCasilla(Pos clickPos){
     }
 }
 
-void Game::menu(){
+void Game::menu() {
     SDL_Texture* menuTexture = loadTexture("res/img/menu.png");
     EntityMenu menu(0, 0, menuTexture);
 
@@ -348,7 +331,7 @@ void Game::menuHandleEvents() {
     }
 }
 
-void Game::dificultad(Pos clickPos){
+void Game::dificultad(Pos clickPos) {
     if(clickPos.x >= 520 && clickPos.y >= 220 && clickPos.x <= 700 && clickPos.y <= 260){
         std::cout << "Facil" << std::endl;
         finMenu = 1;
@@ -381,5 +364,4 @@ void Game::renderMenu(EntityMenu& entityMenu) {
     dst.h = entityMenu.getCurrentFrame().h;
     
     SDL_RenderCopy(renderer, entityMenu.getTex(), &src, &dst);
-
 }
