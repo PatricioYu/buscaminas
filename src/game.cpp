@@ -10,33 +10,36 @@ Game::Game() {
     renderer = nullptr;
     screenWidth = 1024;
     screenHeight = 600;
-    f = 10;    // cantidad de filas
-    c = 40;    // cantidad de columnas
+    f = 10;              // cantidad de filas
+    c = 40;              // cantidad de columnas
     firstClick = false;
     gameState = GameState::PLAY;
 };
 Game::~Game() {};    // Destructor de la clase Game   
 
+// Inicializa la ventana y corre el gameloop
 void Game::run() {
     init("Buscaminas", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     gameLoop();
 }
 
+// Inicializa la ventana
 void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
-    if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    if(SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
         std::cout << "Failed to initialize. Error: " << SDL_GetError();
     };
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-     
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC); 
     icon = IMG_Load("res/img/mina.png");
+
+    // Establece el icono de la ventana
     SDL_SetWindowIcon(window, icon);
 
-    //Inicio Audio
+    // Inicia el audio
     SDL_Init(SDL_INIT_AUDIO);
 
-    //Inicio SDL mixer
+    // Inicio SDL mixer
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
 
@@ -101,8 +104,7 @@ void Game::cleanUp() {
 */
 
 void Game::clear() {
-    SDL_RenderClear(renderer);
-    
+    SDL_RenderClear(renderer); 
 }
 
 void Game::render(Entity& entity) {
@@ -200,7 +202,8 @@ void Game::bombasAleat(Pos) {
     
     for(int i=0; i < b; ++i) {
         bombPosX.push_back(rand() % c);
-        bombPosY.push_back(rand() % f);       
+        bombPosY.push_back(rand() % f);
+
         if(casillas[bombPosY[i]][bombPosX[i]].bomb == false){
             casillas[bombPosY[i]][bombPosX[i]].bomb = true;
             casillas[bombPosY[i]][bombPosX[i]].tex = minaTexture;
@@ -231,11 +234,13 @@ void Game::bombasAleat(Pos) {
         std::cout << "Bomba " << i << std::endl << "X = " << bombPosX[i] << std::endl << "Y = " << bombPosY[i] << std::endl;
     }
 }
+
 void Game::numero_casilla(int x, int y){
     if(x >= 0 && x < c && y >= 0 && y < f && casillas[y][x].bomb != true) {
         casillas[y][x].cont++;
     }
 }
+
 // si las bombas son mas de 12 crashea (30) y si en numcasillas() llamo a dos numCasillas() tambien 
 void Game::numCasilla(Pos clickPos){
     SDL_Texture* casillavaciaTexture = loadTexture("res/img/minesweeper_casilla.png");
