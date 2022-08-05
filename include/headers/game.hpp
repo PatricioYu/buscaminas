@@ -1,12 +1,12 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include "headers/entity.hpp"
 #include "headers/menu.hpp"
-#include <vector>
 
 enum class GameState {PLAY, EXIT};
 typedef struct {
@@ -18,18 +18,21 @@ class Game {
     public:
         Game();
         ~Game();
-        void menu();
 
         SDL_Texture* loadTexture(const char* filePath);
+        Pos getClickedPos();
+
         void clear();
         void render(Entity& entity);
         void display();
+
         void run();
-        Pos getClickedPos();
+        void menu();
         void onFirstClick();
         void bombasAleat(Pos);
-        void numero_casilla(int x, int y);
+        void contMasUno(int x, int y);
         void numCasilla(Pos clickPos);
+
     private:
         void init(const char* title, int x, int y, int w, int h, Uint32 flags);
         void gameLoop();
@@ -46,12 +49,10 @@ class Game {
         SDL_Renderer* renderer;
         SDL_Surface* icon;
 
-        int screenWidth;
-        int screenHeight;
-        int f;
-        int c;
-
+        int screenWidth, screenHeight;
+        int f, c;
         bool firstClick;
         std::vector<std::vector<Entity>> casillas;
+
         GameState gameState;
 };

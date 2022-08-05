@@ -5,19 +5,20 @@
 #include <SDL2/SDL_mixer.h>
 
 class Entity {
-
     public:
         Entity(float x, float y, SDL_Texture* tex);
+
         SDL_Texture* tex;
-        bool bandera = false;
-        bool bomb = false;
+        SDL_Texture* getTex();
+        SDL_Rect getCurrentFrame();
+
         int cont = 0;
         float getX();
         float getY();
-        SDL_Rect getCurrentFrame();
-        SDL_Texture* getTex();
+        bool flag = false;
+        bool mine = false;
 
     private:
-        float x, y;
         SDL_Rect currentFrame;      
+        float x, y;
 };

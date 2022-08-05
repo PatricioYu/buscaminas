@@ -1,8 +1,6 @@
-#include <vector>
 #include <time.h>
-#include <SDL2/SDL_mixer.h>
 #include "headers/game.hpp"
-#include "headers/menu.hpp"
+
 
 // Constructor de la clase Game
 Game::Game() {
@@ -25,7 +23,7 @@ void Game::run() {
 
 // Inicializa la ventana
 void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
-    if(SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
+    if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
         std::cout << "Failed to initialize. Error: " << SDL_GetError();
     };
 
@@ -36,34 +34,28 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     // Establece el icono de la ventana
     SDL_SetWindowIcon(window, icon);
 
-    // Inicia el audio
-    SDL_Init(SDL_INIT_AUDIO);
-
     // Inicio SDL mixer
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
 
+// Ciclo del juego
 void Game::gameLoop() {
-
-    //Se carga los archivos de audio
+    // cargo los audios
     Mix_Music* backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
+    // cargo texturas
+    SDL_Texture* mineTexture = loadTexture("res/img/mina-v2.png");
+    SDL_Texture* boxTexture = loadTexture("res/img/casilla.png");
 
-    //Volumen de la musica
-    Mix_VolumeMusic(20);
-
-    //Se reproduce la musica de fondo
-    Mix_PlayMusic(backgroundMusic, -1);
-
-    SDL_Texture* minaTexture = loadTexture("res/img/mina-v2.png");
-    SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
+    Mix_VolumeMusic(20);    // Volumen del audio
+    Mix_PlayMusic(backgroundMusic, -1);    // Reproduzco el audio     
 
     menu();
 
-    //Creo la matriz de casillas
-    for(int i=0; i<f; i++){
+    // Creo la matriz de casillas
+    for(int i = 0; i < f; i++) {
         std::vector<Entity> casilla;
-        for(int j=0; j<c; j++){
-            Entity casilla1(32 * j, 32 * i, casillaTexture); 
+        for(int j = 0; j < c; j++) {
+            Entity casilla1(32 * j, 32 * i, boxTexture); 
             casilla.push_back(casilla1);
         }
         casillas.push_back(casilla);
@@ -73,40 +65,47 @@ void Game::gameLoop() {
         handleEvents();
         clear();
         
-        for(int i = 0; i<f; i++){
-            for(int j=0; j<c; j++){
+        // Renderizo las casillas
+        for(int i = 0; i < f; i++){
+            for(int j = 0; j < c; j++){
                 render(casillas[i][j]);
             }
         }
+
         display();
     }
 }
 
+// Carga las texturas
 SDL_Texture* Game::loadTexture(const char* filePath) {
     SDL_Texture* texture = NULL;
     texture = IMG_LoadTexture(renderer, filePath);
 
-    if(texture == NULL)
+    if(texture == NULL) {
         std::cout << "Failed to load texture. Error: " << SDL_GetError();
+    }
 
     return texture;
 }
 
+// Destruye la ventana
 void Game::cleanUp() {
     SDL_DestroyWindow(window);
-    
 }
 
+// Apaga el audio
 /*void Game::cleanMusic(){
     Mix_FreeMusic(backgroundSound);
     Mix_CloseAudio();
 }
 */
 
+// Limpia la ventana
 void Game::clear() {
     SDL_RenderClear(renderer); 
 }
 
+// Renderiza la entidad
 void Game::render(Entity& entity) {
     SDL_Rect src;
     src.x = entity.getCurrentFrame().x;
@@ -123,21 +122,24 @@ void Game::render(Entity& entity) {
     SDL_RenderCopy(renderer, entity.getTex(), &src, &dst);
 }
 
+// Muestra en la ventana lo que se renderizo
 void Game::display() {
     SDL_RenderPresent(renderer);
 }
 
+// Devuelve las coordenadas del click
 Pos getClickPos() {
     Pos clickPos;
     Uint32 buttons;
 
-    SDL_PumpEvents();  // make sure we have the latest mouse state
+    SDL_PumpEvents();  // reune todas las entradas pendientes y las deja en la cola de eventos
 
     buttons = SDL_GetMouseState(&clickPos.x, &clickPos.y);
 
     return clickPos;
 }
 
+// eventos
 void Game::handleEvents() {
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
@@ -156,101 +158,106 @@ void Game::handleEvents() {
             std::cout << "Cursor at y: " << clickPos.y/32 << std::endl;
 
             if(evnt.button.button == SDL_BUTTON_LEFT) {      // Click izquierdo
-                std::cout << "click" << std::endl;
+                // std::cout << "click izquierdo" << std::endl;
                 if(!firstClick){
                     onFirstClick();
                 }
                 numCasilla(clickPos);
             }
-            if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
-                std::cout << "clock" << std::endl;
-                bool bandera = false;
-                SDL_Texture* casillaTexture = loadTexture("res/img/casilla.png");
-                SDL_Texture* banderaTexture = loadTexture("res/img/minesweeper_banderilla.png");
+            else if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
+                // std::cout << "click derecho" << std::endl;
+                SDL_Texture* boxTexture = loadTexture("res/img/casilla.png");
+                SDL_Texture* flagTexture = loadTexture("res/img/minesweeper_banderilla.png");
 
-                if(casillas[clickPos.y/32][clickPos.x/32].bandera == true){
-                    casillas[clickPos.y/32][clickPos.x/32].tex = casillaTexture;
-                    casillas[clickPos.y/32][clickPos.x/32].bandera = false;
+                // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
+                if(casillas[clickPos.y/32][clickPos.x/32].flag == true) {
+                    casillas[clickPos.y/32][clickPos.x/32].tex = boxTexture;
+                    casillas[clickPos.y/32][clickPos.x/32].flag = false;
                 }
-                else if(casillas[clickPos.y/32][clickPos.x/32].bandera == false){
-                    casillas[clickPos.y/32][clickPos.x/32].tex = banderaTexture;
-                    casillas[clickPos.y/32][clickPos.x/32].bandera = true;    
+                // sino, cambiar el valor a bandera
+                else if(casillas[clickPos.y/32][clickPos.x/32].flag == false) {
+                    casillas[clickPos.y/32][clickPos.x/32].tex = flagTexture;
+                    casillas[clickPos.y/32][clickPos.x/32].flag = true;    
                 }
             }
             break;
     }
 }
 
-void Game::onFirstClick(){
+// Si es el primer click se activa el posicionamiento de las minas de forma aleatoria
+void Game::onFirstClick() {
     Pos firstClickPos = getClickPos();
 
     firstClick = true;
     std::cout << "First Click" << std::endl;
 
-    // std::cout << "FirstClickCursor at x: " << firstClickPos.x/32 << std::endl;  
-    // std::cout << "FirstClickCursor at y: " << firstClickPos.y/32 << std::endl;
+    // std::cout << "FirstClick x: " << firstClickPos.x/32 << std::endl;  
+    // std::cout << "FirstClick y: " << firstClickPos.y/32 << std::endl;
 
     bombasAleat(firstClickPos);
 }
 
+// Se posicionan las minas de forma aleatoria y generando una pileta en las coordenadas del primer click
 void Game::bombasAleat(Pos) {
     int b = 30;
-    SDL_Texture* minaTexture = loadTexture("res/img/minesweeper_mina_blanca.png");
+    SDL_Texture* mineTexture = loadTexture("res/img/minesweeper_mina_blanca.png");
     srand(time(NULL));
-    std::vector<int> bombPosX;
-    std::vector<int> bombPosY;
+    std::vector<int> mineX;
+    std::vector<int> mineY;
     
-    for(int i=0; i < b; ++i) {
-        bombPosX.push_back(rand() % c);
-        bombPosY.push_back(rand() % f);
+    for(int i = 0; i < b; ++i) {
+        mineX.push_back(rand() % c);
+        mineY.push_back(rand() % f);
 
-        if(casillas[bombPosY[i]][bombPosX[i]].bomb == false){
-            casillas[bombPosY[i]][bombPosX[i]].bomb = true;
-            casillas[bombPosY[i]][bombPosX[i]].tex = minaTexture;
+        if(casillas[mineY[i]][mineX[i]].mine == false) {
+            casillas[mineY[i]][mineX[i]].mine = true;
+            casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
-        else if(casillas[bombPosY[i]][bombPosX[i]].bomb == true){     
-            bombPosX[i] = rand() % c;
-            bombPosY[i] = rand() % f;
+        else if(casillas[mineY[i]][mineX[i]].mine == true) {     
+            mineX[i] = rand() % c;
+            mineY[i] = rand() % f;
             //si es true que recalcule la posicion de la bomba
-            while(casillas[bombPosY[i]][bombPosX[i]].bomb == true){
-                bombPosX[i] = rand() % c;
-                bombPosY[i] = rand() % f;
+            while(casillas[mineY[i]][mineX[i]].mine == true) {
+                mineX[i] = rand() % c;
+                mineY[i] = rand() % f;
             }
-            casillas[bombPosY[i]][bombPosX[i]].bomb = true;
-            casillas[bombPosY[i]][bombPosX[i]].tex = minaTexture;
+            casillas[mineY[i]][mineX[i]].mine = true;
+            casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
         
-        numero_casilla(bombPosX[i] - 1, bombPosY[i]);
-        numero_casilla(bombPosX[i] + 1, bombPosY[i]);
-        numero_casilla(bombPosX[i], bombPosY[i] - 1);
-        numero_casilla(bombPosX[i], bombPosY[i] + 1);
-        numero_casilla(bombPosX[i] - 1, bombPosY[i] - 1);
-        numero_casilla(bombPosX[i] - 1, bombPosY[i] + 1);
-        numero_casilla(bombPosX[i] + 1, bombPosY[i] - 1);
-        numero_casilla(bombPosX[i] + 1, bombPosY[i] + 1);
+        // Cada bomba suma 1 al contador de las casillas adyacentes
+        contMasUno(mineX[i] - 1, mineY[i]);
+        contMasUno(mineX[i] + 1, mineY[i]);
+        contMasUno(mineX[i], mineY[i] - 1);
+        contMasUno(mineX[i], mineY[i] + 1);
+        contMasUno(mineX[i] - 1, mineY[i] - 1);
+        contMasUno(mineX[i] - 1, mineY[i] + 1);
+        contMasUno(mineX[i] + 1, mineY[i] - 1);
+        contMasUno(mineX[i] + 1, mineY[i] + 1);
     }
 
     for(int i=0; i < b; ++i) {
-        std::cout << "Bomba " << i << std::endl << "X = " << bombPosX[i] << std::endl << "Y = " << bombPosY[i] << std::endl;
+        std::cout << "Bomba " << i << std::endl << "X = " << mineX[i] << std::endl << "Y = " << mineY[i] << std::endl;
     }
 }
 
-void Game::numero_casilla(int x, int y){
-    if(x >= 0 && x < c && y >= 0 && y < f && casillas[y][x].bomb != true) {
+// Suma al contador de la casilla pasada por las coordenadas (parametros) mientras no sea una bomba
+void Game::contMasUno(int x, int y) {
+    if(x >= 0 && x < c && y >= 0 && y < f && casillas[y][x].mine != true) {
         casillas[y][x].cont++;
     }
 }
 
-// si las bombas son mas de 12 crashea (30) y si en numcasillas() llamo a dos numCasillas() tambien 
-void Game::numCasilla(Pos clickPos){
-    SDL_Texture* casillavaciaTexture = loadTexture("res/img/minesweeper_casilla.png");
-    SDL_Texture* casilla1Texture = loadTexture("res/img/minesweeper1.png");
-    SDL_Texture* casilla2Texture = loadTexture("res/img/minesweeper2.png");
-    SDL_Texture* casilla3Texture = loadTexture("res/img/minesweeper3.png");
+
+void Game::numCasilla(Pos clickPos) {
+    SDL_Texture* emptyBoxTexture = loadTexture("res/img/minesweeper_casilla.png");
+    SDL_Texture* boxOneTexture = loadTexture("res/img/minesweeper1.png");
+    SDL_Texture* boxTwoTexture = loadTexture("res/img/minesweeper2.png");
+    SDL_Texture* boxThreeTexture = loadTexture("res/img/minesweeper3.png");
 
     switch(casillas[clickPos.y/32][clickPos.x/32].cont) {
         case 0:
-            casillas[clickPos.y/32][clickPos.x/32].tex = casillavaciaTexture;
+            casillas[clickPos.y/32][clickPos.x/32].tex = emptyBoxTexture;
             if(clickPos.x/32 > 0 && clickPos.x/32 < c && clickPos.y/32 > 0 && clickPos.y/32 < f){
                 Pos llamada;
                 //Pos envio;
@@ -271,31 +278,31 @@ void Game::numCasilla(Pos clickPos){
             }
             break;
         case 1:
-            casillas[clickPos.y/32][clickPos.x/32].tex = casilla1Texture;
+            casillas[clickPos.y/32][clickPos.x/32].tex = boxOneTexture;
             break;
         case 2:
-            casillas[clickPos.y/32][clickPos.x/32].tex = casilla2Texture;
+            casillas[clickPos.y/32][clickPos.x/32].tex = boxTwoTexture;
             break;
         case 3:
-            casillas[clickPos.y/32][clickPos.x/32].tex = casilla3Texture;
+            casillas[clickPos.y/32][clickPos.x/32].tex = boxThreeTexture;
             break;
         /*case 4:
-            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum4;
+            casillas[clickPos.y/32][clickPos.x/32].tex = boxFourTexture;
             break;
         case 5:
-            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum5;
+            casillas[clickPos.y/32][clickPos.x/32].tex = boxFiveTexture;
             break;
         case 6:
-            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum6;
+            casillas[clickPos.y/32][clickPos.x/32].tex = boxSixTexture;
             break;
         case 7:
-            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum7;
+            casillas[clickPos.y/32][clickPos.x/32].tex = boxSevenTexture;
             break;
         case 8:
-            casillas[clickPos.y/32][clickPos.x/32].tex = texturaNum8;
+            casillas[clickPos.y/32][clickPos.x/32].tex = boxEightTexture;
             break;*/
         default:
-            casillas[clickPos.y/32][clickPos.x/32].tex = casillavaciaTexture;
+            casillas[clickPos.y/32][clickPos.x/32].tex = emptyBoxTexture;
             break;
     }
 }
