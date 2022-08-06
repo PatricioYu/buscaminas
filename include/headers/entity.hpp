@@ -17,7 +17,7 @@ class Entity {
         float getY();
         bool flag = false;
         bool mine = false;
-
+        bool reveal = false;
     private:
         SDL_Rect currentFrame;      
         float x, y;

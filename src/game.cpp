@@ -158,11 +158,11 @@ void Game::handleEvents() {
             std::cout << "Cursor at y: " << clickPos.y/32 << std::endl;
 
             if(evnt.button.button == SDL_BUTTON_LEFT) {      // Click izquierdo
-                // std::cout << "click izquierdo" << std::endl;
+                // std::cout << "click" << std::endl;
                 if(!firstClick){
                     onFirstClick();
                 }
-                numCasilla(clickPos);
+                numCasilla(clickPos.x / 32, clickPos.y / 32);
             }
             else if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 // std::cout << "click derecho" << std::endl;
@@ -248,64 +248,89 @@ void Game::contMasUno(int x, int y) {
     }
 }
 
+void Game::numCasilla(int clickx, int clicky){
+    SDL_Texture* casillavaciaTexture = loadTexture("res/img/minesweeper_casilla.png");
+    SDL_Texture* casilla1Texture = loadTexture("res/img/minesweeper1.png");
+    SDL_Texture* casilla2Texture = loadTexture("res/img/minesweeper2.png");
+    SDL_Texture* casilla3Texture = loadTexture("res/img/minesweeper3.png");
 
-void Game::numCasilla(Pos clickPos) {
-    SDL_Texture* emptyBoxTexture = loadTexture("res/img/minesweeper_casilla.png");
-    SDL_Texture* boxOneTexture = loadTexture("res/img/minesweeper1.png");
-    SDL_Texture* boxTwoTexture = loadTexture("res/img/minesweeper2.png");
-    SDL_Texture* boxThreeTexture = loadTexture("res/img/minesweeper3.png");
-
-    switch(casillas[clickPos.y/32][clickPos.x/32].cont) {
+    switch(casillas[clicky][clickx].cont) {
         case 0:
-            casillas[clickPos.y/32][clickPos.x/32].tex = emptyBoxTexture;
-            if(clickPos.x/32 > 0 && clickPos.x/32 < c && clickPos.y/32 > 0 && clickPos.y/32 < f){
-                Pos llamada;
-                //Pos envio;
-                llamada.x = clickPos.x;
-                llamada.y = clickPos.y;
-                numCasilla(llamada = {llamada.x + 32, llamada.y});
-                //std::cout<<"ejecutado1"<<std::endl;
-                //numCasilla(llamada = {llamada.x - 32, llamada.y});
-                //std::cout<<"ejecutado2"<<std::endl;
+            casillas[clicky][clickx].tex = casillavaciaTexture;
+            casillas[clicky][clickx].reveal = true;
+            if(clickx > 0 && clickx < c && clicky > 0 && clicky < f && casillas[clicky][clickx].mine == false){
+                if(casillas[clicky - 1][clickx].reveal == false && (clicky - 1) > 0){
+                    numCasilla(clickx, clicky - 1);
+                }
                 
-                //std::cout<<"ejecutado2"<<std::endl;
-                //numCasilla(llamada = {llamada.x, llamada.y + 32});
-                //numCasilla(llamada = {llamada.x, llamada.y - 32});
-                //numCasilla(llamada = {llamada.x + 32, llamada.y + 32});
-                //numCasilla(llamada = {llamada.x + 32, llamada.y - 32});
-                //numCasilla(llamada = {llamada.x - 32, llamada.y + 32});
-                //numCasilla(llamada = {llamada.x - 32, llamada.y - 32});
+                if(casillas[clicky + 1][clickx].reveal == false && (clicky + 1) < f){
+                    numCasilla(clickx, clicky + 1);
+                }
+                
+                if(casillas[clicky - 1][clickx - 1].reveal == false && (clickx - 1) > 0 && (clicky - 1) > 0 ){
+                    numCasilla(clickx - 1, clicky - 1);
+                }
+
+                if(casillas[clicky - 1][clickx + 1].reveal == false && (clickx + 1) < c && (clicky - 1) > 0){
+                    numCasilla(clickx + 1, clicky - 1);
+                }
+                
+                if(casillas[clicky + 1][clickx + 1].reveal == false && (clickx + 1) < c && (clicky + 1) < f){
+                    numCasilla(clickx + 1, clicky + 1);
+                }
+                
+                if(casillas[clicky + 1][clickx - 1].reveal == false && (clickx - 1) > 0 && (clicky + 1) < f){
+                    numCasilla(clickx - 1, clicky + 1);
+                }
+                
+                if(casillas[clicky][clickx - 1].reveal == false && (clickx - 1) > 0){
+                    numCasilla(clickx - 1, clicky);
+                }
+
+                if(casillas[clicky][clickx + 1].reveal == false && (clickx + 1) < c){
+                    numCasilla(clickx + 1, clicky);
+                }
             }
             break;
         case 1:
-            casillas[clickPos.y/32][clickPos.x/32].tex = boxOneTexture;
+            casillas[clicky][clickx].tex = casilla1Texture;
+            casillas[clicky][clickx].reveal = true;
             break;
         case 2:
-            casillas[clickPos.y/32][clickPos.x/32].tex = boxTwoTexture;
+            casillas[clicky][clickx].tex = casilla2Texture;
+            casillas[clicky][clickx].reveal = true;
             break;
         case 3:
-            casillas[clickPos.y/32][clickPos.x/32].tex = boxThreeTexture;
+            casillas[clicky][clickx].tex = casilla3Texture;
+            casillas[clicky][clickx].reveal = true;
             break;
         /*case 4:
-            casillas[clickPos.y/32][clickPos.x/32].tex = boxFourTexture;
+            casillas[clicky][clickx].tex = texturaNum4;
+            casillas[clicky][clickx].reveal = true;
             break;
         case 5:
-            casillas[clickPos.y/32][clickPos.x/32].tex = boxFiveTexture;
+            casillas[clicky][clickx].tex = texturaNum5;
+            casillas[clicky][clickx].reveal = true;
             break;
         case 6:
-            casillas[clickPos.y/32][clickPos.x/32].tex = boxSixTexture;
+            casillas[clicky][clickx].tex = texturaNum6;
+            casillas[clicky][clickx].reveal = true;
             break;
         case 7:
-            casillas[clickPos.y/32][clickPos.x/32].tex = boxSevenTexture;
+            casillas[clicky][clickx].tex = texturaNum7;
+            casillas[clicky][clickx].reveal = true;
             break;
         case 8:
-            casillas[clickPos.y/32][clickPos.x/32].tex = boxEightTexture;
+            casillas[clicky][clickx].tex = texturaNum8;
+            casillas[clicky][clickx].reveal = true;
             break;*/
         default:
-            casillas[clickPos.y/32][clickPos.x/32].tex = emptyBoxTexture;
+            casillas[clicky][clickx].tex = casillavaciaTexture;
             break;
     }
+    
 }
+
 
 void Game::menu() {
     SDL_Texture* menuTexture = loadTexture("res/img/menu.png");

@@ -31,7 +31,7 @@ class Game {
         void onFirstClick();
         void bombasAleat(Pos);
         void contMasUno(int x, int y);
-        void numCasilla(Pos clickPos);
+        void numCasilla(int clickx, int clicky);
 
     private:
         void init(const char* title, int x, int y, int w, int h, Uint32 flags);
