@@ -170,12 +170,12 @@ void Game::handleEvents() {
                 SDL_Texture* flagTexture = loadTexture("res/img/minesweeper_banderilla.png");
 
                 // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
-                if(casillas[clickPos.y/32][clickPos.x/32].flag == true) {
+                if(casillas[clickPos.y/32][clickPos.x/32].flag == true && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
                     casillas[clickPos.y/32][clickPos.x/32].tex = boxTexture;
                     casillas[clickPos.y/32][clickPos.x/32].flag = false;
                 }
                 // sino, cambiar el valor a bandera
-                else if(casillas[clickPos.y/32][clickPos.x/32].flag == false) {
+                else if(casillas[clickPos.y/32][clickPos.x/32].flag == false && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
                     casillas[clickPos.y/32][clickPos.x/32].tex = flagTexture;
                     casillas[clickPos.y/32][clickPos.x/32].flag = true;    
                 }
@@ -249,103 +249,103 @@ void Game::contMasUno(int x, int y) {
 }
 
 // Selecciona el número que tiene la casilla según la cantidad de bombas que hay alrededor
-void Game::numCasilla(int clickX, int clickY){
-    SDL_Texture* casillavaciaTexture = loadTexture("res/img/minesweeper_casilla.png");
-    SDL_Texture* casilla1Texture = loadTexture("res/img/minesweeper1.png");
-    SDL_Texture* casilla2Texture = loadTexture("res/img/minesweeper2.png");
-    SDL_Texture* casilla3Texture = loadTexture("res/img/minesweeper3.png");
+void Game::numCasilla(int clickX, int clickY) {
+    SDL_Texture* emptyBoxTexture = loadTexture("res/img/minesweeper_casilla.png");
+    SDL_Texture* boxOneTexture = loadTexture("res/img/minesweeper1.png");
+    SDL_Texture* boxTwoTexture = loadTexture("res/img/minesweeper2.png");
+    SDL_Texture* boxThreeTexture = loadTexture("res/img/minesweeper3.png");
 
     switch(casillas[clickY][clickX].cont) {
         case 0:
-            casillas[clickY][clickX].tex = casillavaciaTexture;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = emptyBoxTexture;
+            casillas[clickY][clickX].revealed = true;
             
             // Si es 0 hay que revelar las casillas que estan alrededor llamando de nuevo a esta funcion revelando los puntos cardinales
             // Primero verifica que la casilla a revelar existe declarada en el tablero
-            if((clickY - 1) >= 0){
+            if((clickY - 1) >= 0) {
                 // Despues que la casilla a revelar no esté revelada
-                if(casillas[clickY - 1][clickX].reveal == false){
+                if(casillas[clickY - 1][clickX].revealed == false) {
                     numCasilla(clickX, clickY - 1);                     // Norte
                 }
             }
                 
-            if((clickY + 1) < f){
-                if(casillas[clickY + 1][clickX].reveal == false){
+            if((clickY + 1) < f) {
+                if(casillas[clickY + 1][clickX].revealed == false) {
                     numCasilla(clickX, clickY + 1);                     // Sur
                 }
             }
                 
-            if((clickX - 1) > 0 && (clickY - 1) > 0 ){
-                if(casillas[clickY - 1][clickX - 1].reveal == false){
+            if((clickX - 1) > 0 && (clickY - 1) > 0 ) {
+                if(casillas[clickY - 1][clickX - 1].revealed == false){
                     numCasilla(clickX - 1, clickY - 1);                 // Noroeste 
                 }
             }
 
-            if((clickX + 1) < c && (clickY - 1) > 0){
-                if(casillas[clickY - 1][clickX + 1].reveal == false){
+            if((clickX + 1) < c && (clickY - 1) > 0) {
+                if(casillas[clickY - 1][clickX + 1].revealed == false){
                     numCasilla(clickX + 1, clickY - 1);                 // Noreste
                 }
             }
 
-            if((clickX + 1) < c && (clickY + 1) < f){
-                if(casillas[clickY + 1][clickX + 1].reveal == false){
+            if((clickX + 1) < c && (clickY + 1) < f) {
+                if(casillas[clickY + 1][clickX + 1].revealed == false){
                     numCasilla(clickX + 1, clickY + 1);                 // Sureste
                 }
             }
 
-            if((clickX - 1) > 0 && (clickY + 1) < f){
-                if(casillas[clickY + 1][clickX - 1].reveal == false){
+            if((clickX - 1) > 0 && (clickY + 1) < f) {
+                if(casillas[clickY + 1][clickX - 1].revealed == false){
                     numCasilla(clickX - 1, clickY + 1);                 // Suroeste
                 }
             }
                 
-            if((clickX - 1) >= 0){
-                if(casillas[clickY][clickX - 1].reveal == false){
+            if((clickX - 1) >= 0) {
+                if(casillas[clickY][clickX - 1].revealed == false){
                     numCasilla(clickX - 1, clickY);                     // Oeste
                 }
             }
 
-            if((clickX + 1) < c){
-                if(casillas[clickY][clickX + 1].reveal == false){
+            if((clickX + 1) < c) {
+                if(casillas[clickY][clickX + 1].revealed == false){
                     numCasilla(clickX + 1, clickY);                     // Este
                 }
             }
 
             break;
         case 1:
-            casillas[clickY][clickX].tex = casilla1Texture;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = boxOneTexture;
+            casillas[clickY][clickX].revealed = true;
             break;
         case 2:
-            casillas[clickY][clickX].tex = casilla2Texture;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = boxTwoTexture;
+            casillas[clickY][clickX].revealed = true;
             break;
         case 3:
-            casillas[clickY][clickX].tex = casilla3Texture;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = boxThreeTexture;
+            casillas[clickY][clickX].revealed = true;
             break;
         /*case 4:
-            casillas[clickY][clickX].tex = texturaNum4;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = boxFourTexture;
+            casillas[clickY][clickX].revealed = true;
             break;
         case 5:
-            casillas[clickY][clickX].tex = texturaNum5;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = boxFiveTexture;
+            casillas[clickY][clickX].revealed = true;
             break;
         case 6:
-            casillas[clickY][clickX].tex = texturaNum6;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = boxSixTexture;
+            casillas[clickY][clickX].revealed = true;
             break;
         case 7:
-            casillas[clickY][clickX].tex = texturaNum7;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = boxSevenTexture;
+            casillas[clickY][clickX].revealed = true;
             break;
         case 8:
-            casillas[clickY][clickX].tex = texturaNum8;
-            casillas[clickY][clickX].reveal = true;
+            casillas[clickY][clickX].tex = boxEightTexture;
+            casillas[clickY][clickX].revealed = true;
             break;*/
         default:
-            casillas[clickY][clickX].tex = casillavaciaTexture;
+            casillas[clickY][clickX].tex = emptyBoxTexture;
             break;
     }
 }
