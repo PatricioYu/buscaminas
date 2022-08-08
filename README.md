@@ -48,4 +48,4 @@ Nivel experto: 16 × 30 casillas y 99 minas.
 Nivel personalizado: en este caso el usuario personaliza su juego eligiendo el número de minas y el tamaño de la cuadrícula.
 
 # Buscaminas Pipeline
-![alt text](https://cdn.discordapp.com/attachments/756557461934309521/988948941884227706/buscaminaspipeline.png)
+![alt text](res/img/buscaminaspipeline.png)
