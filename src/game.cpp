@@ -31,7 +31,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC); 
     icon = IMG_Load("res/img/mina.png");
 
-    // Establece el icono de la ventana
+    // Establece el ícono de la ventana
     SDL_SetWindowIcon(window, icon);
 
     // Inicio SDL mixer
@@ -132,14 +132,14 @@ Pos getClickPos() {
     Pos clickPos;
     Uint32 buttons;
 
-    SDL_PumpEvents();  // reune todas las entradas pendientes y las deja en la cola de eventos
+    SDL_PumpEvents();  // Reúne todas las entradas pendientes y las deja en la cola de eventos
 
     buttons = SDL_GetMouseState(&clickPos.x, &clickPos.y);
 
     return clickPos;
 }
 
-// eventos
+// Eventos
 void Game::handleEvents() {
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
@@ -153,7 +153,7 @@ void Game::handleEvents() {
         case SDL_MOUSEBUTTONUP:
             Pos clickPos = getClickPos();
 
-            // Sabiendo que las imagenes son de 32 pixeles simplemente tenemos que dividir x e y por 32 para que nos de una coordenada coherente
+            // Sabiendo que las imágenes son de 32 pixeles simplemente tenemos que dividir x e y por 32 para que nos de una coordenada coherente
             std::cout << "Cursor at x: " << clickPos.x/32 << std::endl;  
             std::cout << "Cursor at y: " << clickPos.y/32 << std::endl;
 
@@ -216,7 +216,7 @@ void Game::bombasAleat(Pos) {
         else if(casillas[mineY[i]][mineX[i]].mine == true) {     
             mineX[i] = rand() % c;
             mineY[i] = rand() % f;
-            //si es true que recalcule la posicion de la bomba
+            // Mientras la mina a crear ya existe se recalcula la posicion de la bomba
             while(casillas[mineY[i]][mineX[i]].mine == true) {
                 mineX[i] = rand() % c;
                 mineY[i] = rand() % f;
@@ -241,14 +241,14 @@ void Game::bombasAleat(Pos) {
     }
 }
 
-// Suma al contador de la casilla pasada por las coordenadas (parametros) mientras no sea una bomba
+// Suma al contador de la casilla pasada por las coordenadas (parámetros) mientras no sea una bomba
 void Game::contMasUno(int x, int y) {
     if(x >= 0 && x < c && y >= 0 && y < f && casillas[y][x].mine != true) {
         casillas[y][x].cont++;
     }
 }
 
-// Selecciona el numero que tiene la casilla segun la cantidad de bombas que hay alrededor
+// Selecciona el número que tiene la casilla según la cantidad de bombas que hay alrededor
 void Game::numCasilla(int clickX, int clickY){
     SDL_Texture* casillavaciaTexture = loadTexture("res/img/minesweeper_casilla.png");
     SDL_Texture* casilla1Texture = loadTexture("res/img/minesweeper1.png");
