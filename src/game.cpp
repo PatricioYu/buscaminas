@@ -172,6 +172,11 @@ void Game::handleEvents() {
 
                 // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
                 if(clickPos.x/32 >= 0 && clickPos.x/32 < c && clickPos.y/32 >= 0 && clickPos.y/32 < f) {
+                    if(!firstClick) {
+                        firstClick = true;
+                        Pos firstClickPos = {firstClickPos.x = rand() % c, firstClickPos.y = rand() % f};
+                        bombasAleat(firstClickPos);
+                    }
                     if(casillas[clickPos.y/32][clickPos.x/32].flag == true && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
                         casillas[clickPos.y/32][clickPos.x/32].tex = boxTexture;
                         casillas[clickPos.y/32][clickPos.x/32].flag = false;
