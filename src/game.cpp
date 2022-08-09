@@ -158,7 +158,7 @@ void Game::handleEvents() {
 
             if(evnt.button.button == SDL_BUTTON_LEFT) {      // Click izquierdo
                 // std::cout << "click" << std::endl;
-                if(clickPos.x/32 >= 0 && clickPos.x/32 < c && clickPos.y/32 >= 0 && clickPos.y/32 < f) {
+                if(clickPos.x/32 >= 0 && clickPos.x/32 < c && clickPos.y/32 >= 0 && clickPos.y/32 < f && casillas[clickPos.y/32][clickPos.x/32].flag == false) {
                     if(!firstClick){
                         onFirstClick();
                     }
