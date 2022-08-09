@@ -1,7 +1,6 @@
 #include <time.h>
 #include "headers/game.hpp"
 
-
 // Constructor de la clase Game
 Game::Game() {
     window = nullptr;
@@ -29,7 +28,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC); 
-    icon = IMG_Load("res/img/mina.png");
+    icon = IMG_Load("res/img/minesweeper_mina_blanca.png");
 
     // Establece el ícono de la ventana
     SDL_SetWindowIcon(window, icon);
@@ -159,10 +158,12 @@ void Game::handleEvents() {
 
             if(evnt.button.button == SDL_BUTTON_LEFT) {      // Click izquierdo
                 // std::cout << "click" << std::endl;
-                if(!firstClick){
-                    onFirstClick();
+                if(clickPos.x/32 >= 0 && clickPos.x/32 < c && clickPos.y/32 >= 0 && clickPos.y/32 < f) {
+                    if(!firstClick){
+                        onFirstClick();
+                    }
+                    numCasilla(clickPos.x / 32, clickPos.y / 32);
                 }
-                numCasilla(clickPos.x / 32, clickPos.y / 32);
             }
             else if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 // std::cout << "click derecho" << std::endl;
@@ -170,14 +171,16 @@ void Game::handleEvents() {
                 SDL_Texture* flagTexture = loadTexture("res/img/minesweeper_banderilla.png");
 
                 // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
-                if(casillas[clickPos.y/32][clickPos.x/32].flag == true && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
-                    casillas[clickPos.y/32][clickPos.x/32].tex = boxTexture;
-                    casillas[clickPos.y/32][clickPos.x/32].flag = false;
-                }
-                // sino, cambiar el valor a bandera
-                else if(casillas[clickPos.y/32][clickPos.x/32].flag == false && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
-                    casillas[clickPos.y/32][clickPos.x/32].tex = flagTexture;
-                    casillas[clickPos.y/32][clickPos.x/32].flag = true;    
+                if(clickPos.x/32 >= 0 && clickPos.x/32 < c && clickPos.y/32 >= 0 && clickPos.y/32 < f) {
+                    if(casillas[clickPos.y/32][clickPos.x/32].flag == true && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
+                        casillas[clickPos.y/32][clickPos.x/32].tex = boxTexture;
+                        casillas[clickPos.y/32][clickPos.x/32].flag = false;
+                    }
+                    // sino, cambiar el valor a bandera
+                    else if(casillas[clickPos.y/32][clickPos.x/32].flag == false && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
+                        casillas[clickPos.y/32][clickPos.x/32].tex = flagTexture;
+                        casillas[clickPos.y/32][clickPos.x/32].flag = true;    
+                    }
                 }
             }
             break;
@@ -191,14 +194,14 @@ void Game::onFirstClick() {
     firstClick = true;
     std::cout << "First Click" << std::endl;
 
-    // std::cout << "FirstClick x: " << firstClickPos.x/32 << std::endl;  
-    // std::cout << "FirstClick y: " << firstClickPos.y/32 << std::endl;
+    // std::cout << "FirstClick x: " << (firstClickPos.x/32)/32 << std::endl;  
+    // std::cout << "FirstClick y: " << (firstClickPos.y/32)/32 << std::endl;
 
     bombasAleat(firstClickPos);
 }
 
 // Se posicionan las minas de forma aleatoria y generando una pileta en las coordenadas del primer click
-void Game::bombasAleat(Pos) {
+void Game::bombasAleat(const Pos& firstClickPos) {
     int b = 30;
     SDL_Texture* mineTexture = loadTexture("res/img/minesweeper_mina_blanca.png");
     srand(time(NULL));
@@ -209,15 +212,15 @@ void Game::bombasAleat(Pos) {
         mineX.push_back(rand() % c);
         mineY.push_back(rand() % f);
 
-        if(casillas[mineY[i]][mineX[i]].mine == false) {
+        if(casillas[mineY[i]][mineX[i]].mine == false && mineX[i] != firstClickPos.x/32 && mineX[i] != firstClickPos.x/32+1 && mineX[i] != firstClickPos.x/32-1 && mineY[i] != firstClickPos.y/32 && mineY[i] != firstClickPos.y/32+1 && mineY[i] != firstClickPos.y/32-1) {
             casillas[mineY[i]][mineX[i]].mine = true;
             casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
-        else if(casillas[mineY[i]][mineX[i]].mine == true) {     
+        else if(casillas[mineY[i]][mineX[i]].mine == true || mineX[i] == firstClickPos.x/32 || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {     
             mineX[i] = rand() % c;
             mineY[i] = rand() % f;
             // Mientras la mina a crear ya existe se recalcula la posicion de la bomba
-            while(casillas[mineY[i]][mineX[i]].mine == true) {
+            while(casillas[mineY[i]][mineX[i]].mine == true || mineX[i] == firstClickPos.x/32 || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {
                 mineX[i] = rand() % c;
                 mineY[i] = rand() % f;
             }
@@ -350,7 +353,6 @@ void Game::numCasilla(int clickX, int clickY) {
     }
 }
 
-
 void Game::menu() {
     SDL_Texture* menuTexture = loadTexture("res/img/menu.png");
     EntityMenu menu(0, 0, menuTexture);
@@ -388,19 +390,19 @@ void Game::menuHandleEvents() {
 }
 
 void Game::dificultad(Pos clickPos) {
-    if(clickPos.x >= 520 && clickPos.y >= 220 && clickPos.x <= 700 && clickPos.y <= 260){
+    if(clickPos.x >= 520 && clickPos.y >= 220 && clickPos.x <= 700 && clickPos.y <= 260) {
         std::cout << "Facil" << std::endl;
         finMenu = 1;
     }
-    if(clickPos.x >= 520 && clickPos.y >= 265 && clickPos.x <= 700 && clickPos.y <= 297){
+    if(clickPos.x >= 520 && clickPos.y >= 265 && clickPos.x <= 700 && clickPos.y <= 297) {
         std::cout << "Normal" << std::endl;
         finMenu = 1;
     }
-    if(clickPos.x >= 520 && clickPos.y >= 300 && clickPos.x <= 700 && clickPos.y <= 333){
+    if(clickPos.x >= 520 && clickPos.y >= 300 && clickPos.x <= 700 && clickPos.y <= 333) {
         std::cout << "Dificil" << std::endl;
         finMenu = 1;
     }
-    if(clickPos.x >= 520 && clickPos.y >= 340 && clickPos.x <= 700 && clickPos.y <= 375){
+    if(clickPos.x >= 520 && clickPos.y >= 340 && clickPos.x <= 700 && clickPos.y <= 375) {
         std::cout << "Personalizado" << std::endl;
         finMenu = 1;
     }
