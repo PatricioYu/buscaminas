@@ -162,8 +162,14 @@ void Game::handleEvents() {
                     if(!firstClick){
                         onFirstClick();
                     }
+                    else if(casillas[clickPos.y/32][clickPos.x/32].mine == true) {
+                        std::cout << "Perdiste" << std::endl;
+                        cleanUp();
+                        gameState = GameState::EXIT;
+                    }
                     numCasilla(clickPos.x / 32, clickPos.y / 32);
                 }
+                
             }
             else if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 // std::cout << "click derecho" << std::endl;
