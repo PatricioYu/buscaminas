@@ -213,7 +213,7 @@ void Game::onFirstClick() {
 
 // Se posicionan las minas de forma aleatoria y generando una pileta en las coordenadas del primer click
 void Game::bombasAleat(const Pos& firstClickPos) {
-    int b = 30;
+    int b = 50;
     SDL_Texture* mineTexture = loadTexture("res/img/minesweeper_mina_blanca.png");
     srand(time(NULL));
     std::vector<int> mineX;
@@ -223,15 +223,15 @@ void Game::bombasAleat(const Pos& firstClickPos) {
         mineX.push_back(rand() % c);
         mineY.push_back(rand() % f);
 
-        if(casillas[mineY[i]][mineX[i]].mine == false && mineX[i] != firstClickPos.x/32 && mineX[i] != firstClickPos.x/32+1 && mineX[i] != firstClickPos.x/32-1 && mineY[i] != firstClickPos.y/32 && mineY[i] != firstClickPos.y/32+1 && mineY[i] != firstClickPos.y/32-1) {
+        if(casillas[mineY[i]][mineX[i]].mine == false && (mineX[i] != firstClickPos.x/32 && mineY[i] != firstClickPos.y/32) && mineX[i] != firstClickPos.x/32+1 && mineX[i] != firstClickPos.x/32-1  && mineY[i] != firstClickPos.y/32+1 && mineY[i] != firstClickPos.y/32-1) {
             casillas[mineY[i]][mineX[i]].mine = true;
             casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
-        else if(casillas[mineY[i]][mineX[i]].mine == true || mineX[i] == firstClickPos.x/32 || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {     
+        else if(casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x/32 && mineY[i] == firstClickPos.y/32) || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {     
             mineX[i] = rand() % c;
             mineY[i] = rand() % f;
             // Mientras la mina a crear ya existe se recalcula la posicion de la bomba
-            while(casillas[mineY[i]][mineX[i]].mine == true || mineX[i] == firstClickPos.x/32 || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {
+            while(casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x/32 && mineY[i] == firstClickPos.y/32) || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {
                 mineX[i] = rand() % c;
                 mineY[i] = rand() % f;
             }
