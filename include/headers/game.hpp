@@ -29,7 +29,7 @@ class Game {
         void run();
         void menu();
         void onFirstClick();
-        void bombasAleat(Pos);
+        void bombasAleat(const Pos& firstClickPos);
         void contMasUno(int x, int y);
         void numCasilla(int clickX, int clickY);
 
