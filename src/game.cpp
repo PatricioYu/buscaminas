@@ -32,7 +32,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    icon = IMG_Load("res/img/minesweeper_mina_blanca.png");
+    icon = IMG_Load("GUI/inGame/MinaTerrestre.png");
 
     // Establece el ícono de la ventana
     SDL_SetWindowIcon(window, icon);
@@ -40,17 +40,18 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     // Inicio SDL mixer
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
-
+bool music = true;
 // Ciclo del juego
 void Game::gameLoop()
 {
     // cargo los audios
-    Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
+    //Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
+    Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/The_Shire.mp3");
     // cargo texturas
     SDL_Texture *mineTexture = loadTexture("res/img/mina-v2.png");
     SDL_Texture *boxTexture = loadTexture("GUI/inGame/Grass.png");
 
-    Mix_VolumeMusic(20);                // Volumen del audio
+    Mix_VolumeMusic(music ? 20 : 0);    // Volumen del audio
     Mix_PlayMusic(backgroundMusic, -1); // Reproduzco el audio
 
     menu();
@@ -198,7 +199,7 @@ void Game::handleEvents()
         else if (evnt.button.button == SDL_BUTTON_RIGHT)
         { // Click derecho
             // std::cout << "click derecho" << std::endl;
-            SDL_Texture *boxTexture = loadTexture("res/img/casilla.png");
+            SDL_Texture *boxTexture = loadTexture("GUI/inGame/stepedGrass.png");
             SDL_Texture *flagTexture = loadTexture("GUI/inGame/Flag.png");
 
             // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
@@ -498,12 +499,12 @@ void Game::menuHandleEvents()
             dificultad(eligeDif);
         }
         // Boton Presonalizado
-        if (clickPos.y >= (((screenHeight / 2) + (buttonHeight * 5)) + 1) && (clickPos.y <= (screenHeight / 2) + (buttonHeight * 7)) && clickPos.x >= (screenWidth / 2) - buttonWidth && clickPos.x <= (screenWidth / 2) + buttonWidth)
+/*         if (clickPos.y >= (((screenHeight / 2) + (buttonHeight * 5)) + 1) && (clickPos.y <= (screenHeight / 2) + (buttonHeight * 7)) && clickPos.x >= (screenWidth / 2) - buttonWidth && clickPos.x <= (screenWidth / 2) + buttonWidth)
         {
             std::cout << "PERSONALIZADO" << std::endl;
             eligeDif = 4;
             dificultad(eligeDif);
-        }
+        } */
         if (clickPos.x >= 0 && clickPos.x <= 30 && clickPos.y >= 0 && clickPos.y <= 30)
         {
             // music = false;
