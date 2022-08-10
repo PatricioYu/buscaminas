@@ -7,8 +7,6 @@ Game::Game() {
     renderer = nullptr;
     screenWidth = 1024;
     screenHeight = 600;
-    f = 10;              // cantidad de filas
-    c = 40;              // cantidad de columnas
     firstClick = false;
     gameState = GameState::PLAY;
 };
@@ -212,7 +210,6 @@ void Game::onFirstClick() {
 
 // Se posicionan las minas de forma aleatoria y generando una pileta en las coordenadas del primer click
 void Game::bombasAleat(const Pos& firstClickPos) {
-    int b = 50;
     SDL_Texture* mineTexture = loadTexture("res/img/minesweeper_mina_blanca.png");
     srand(time(NULL));
     std::vector<int> mineX;
@@ -398,15 +395,27 @@ void Game::menuHandleEvents() {
 void Game::dificultad(Pos clickPos) {
     if(clickPos.x >= 520 && clickPos.y >= 220 && clickPos.x <= 700 && clickPos.y <= 260) {
         std::cout << "Facil" << std::endl;
+        b = 10;
+        f = 8;
+        c = 10;
         finMenu = 1;
+        SDL_SetWindowSize(window, c*32, f*32);
     }
     if(clickPos.x >= 520 && clickPos.y >= 265 && clickPos.x <= 700 && clickPos.y <= 297) {
         std::cout << "Normal" << std::endl;
+        b = 40;
+        f = 14;
+        c = 18;
         finMenu = 1;
+        SDL_SetWindowSize(window, c*32, f*32);
     }
     if(clickPos.x >= 520 && clickPos.y >= 300 && clickPos.x <= 700 && clickPos.y <= 333) {
         std::cout << "Dificil" << std::endl;
+        b = 99;
+        f = 20;
+        c = 24;
         finMenu = 1;
+        SDL_SetWindowSize(window, c*32, f*32);
     }
     if(clickPos.x >= 520 && clickPos.y >= 340 && clickPos.x <= 700 && clickPos.y <= 375) {
         std::cout << "Personalizado" << std::endl;

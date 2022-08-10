@@ -50,7 +50,7 @@ class Game {
         SDL_Surface* icon;
 
         int screenWidth, screenHeight;
-        int f, c;
+        int f, c, total, b;
         bool firstClick;
         std::vector<std::vector<Entity>> casillas;
 
