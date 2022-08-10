@@ -3,8 +3,8 @@
 EntityMenu::EntityMenu(float x, float y, SDL_Texture* tex) :x(x), y(y), tex(tex){
     currentFrame.x = 0;
     currentFrame.y = 0;
-    currentFrame.w = 1024;
-    currentFrame.h = 600;
+    currentFrame.w = 800;
+    currentFrame.h = 800;
 }
 
 float EntityMenu::getX() {

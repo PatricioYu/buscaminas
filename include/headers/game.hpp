@@ -42,7 +42,7 @@ class Game {
         void cleanMusic();
         //menu
         void menuHandleEvents();
-        void dificultad(Pos clickPos);
+        void dificultad(int eligeDif);
         void renderMenu(EntityMenu& entity);
         int finMenu = 0;
         
