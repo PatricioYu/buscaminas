@@ -7,6 +7,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "headers/entity.hpp"
 #include "headers/menu.hpp"
+#include "headers/button.hpp"
 
 enum class GameState {PLAY, EXIT};
 typedef struct {
@@ -45,6 +46,9 @@ class Game {
         void renderMenu(EntityMenu& entity);
         int finMenu = 0;
         
+        //boton
+        void renderButton(EntityButton& entity);
+
         SDL_Window* window;
         SDL_Renderer* renderer;
         SDL_Surface* icon;

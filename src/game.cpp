@@ -364,40 +364,88 @@ void Game::numCasilla(int clickX, int clickY) {
             break;
     }
 }
+    int buttonHeight = 66;
+    int buttonWidth = 200;
 
-void Game::menu() {
-    SDL_Texture* menuTexture = loadTexture("res/img/menu.png");
+void Game::menu()
+{
+    SDL_Texture *menuTexture = loadTexture("GUI/menu0001.png");
     EntityMenu menu(0, 0, menuTexture);
 
-    while(finMenu == 0 && gameState != GameState::EXIT){
+    //Carga de texturas de los botones
+    //Facil
+    SDL_Texture *buttonFTexture = loadTexture("GUI/FacilFinal.png");
+    EntityButton buttonF((screenWidth / 2) - (buttonWidth/2),(screenHeight / 2), buttonFTexture);
+    //Medio
+    SDL_Texture *buttonMTexture = loadTexture("GUI/MedioFinal.png");
+    EntityButton buttonM((screenWidth / 2) - (buttonWidth/2),((screenHeight / 2) + buttonHeight + 1), buttonMTexture);
+    //Dificil
+    SDL_Texture *buttonDTexture = loadTexture("GUI/DificilFinalFinal.png");
+    EntityButton buttonD((screenWidth / 2) - (buttonWidth/2),(((screenHeight / 2) + (buttonHeight * 2)) + 1), buttonDTexture);
+
+
+    while (finMenu == 0 && gameState != GameState::EXIT)
+    {
         menuHandleEvents();
         clear();
         renderMenu(menu);
+        renderButton(buttonF);
+        renderButton(buttonM);
+        renderButton(buttonD);
+
         display();
     }
 }
 
-void Game::menuHandleEvents() {
+void Game::menuHandleEvents()
+{
+
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
 
-    switch(evnt.type) {
-        case SDL_QUIT:
-            cleanUp();
-            gameState = GameState::EXIT;
+    switch (evnt.type)
+    {
+    case SDL_QUIT:
+        cleanUp();
+        gameState = GameState::EXIT;
 
-            break;
-        case SDL_MOUSEBUTTONUP:
-            Pos clickPos = getClickPos();
+        break;
+    case SDL_MOUSEBUTTONUP:
+        Pos clickPos = getClickPos();
 
-            std::cout << "Cursor at x: " << clickPos.x << std::endl;  
-            std::cout << "Cursor at y: " << clickPos.y << std::endl;
+        std::cout << "Cursor at x: " << clickPos.x << std::endl;
+        std::cout << "Cursor at y: " << clickPos.y << std::endl;
 
-            if(evnt.button.button == SDL_BUTTON_LEFT) {      // Click izquierdo
-                std::cout << "click" << std::endl;
-                dificultad(clickPos);
-            }
-            break;
+        if (evnt.button.button == SDL_BUTTON_LEFT)
+        { // Click izquierdo
+            std::cout << "click" << std::endl;
+            /*             dificultad(clickPos); */
+        }
+        if (clickPos.y >= (screenHeight / 2) - buttonHeight && clickPos.y <= (screenHeight / 2) + buttonHeight && clickPos.x >= (screenWidth / 2) - (buttonWidth/2) && clickPos.x <= (screenWidth / 2) + (buttonWidth/2))
+        {
+            std::cout << "FACIL" << std::endl;
+        }
+        // Boton "Medio"
+        if (clickPos.y >= ((screenHeight / 2) + buttonHeight + 1) && (clickPos.y <= (screenHeight / 2) + (buttonHeight * 2)) && clickPos.x >= (screenWidth / 2) - (buttonWidth/2) && clickPos.x <= (screenWidth / 2) + (buttonWidth/2))
+        {
+            std::cout << "MEDIO" << std::endl;
+        }
+        // Boton "Dificil"
+        if (clickPos.y >= (((screenHeight / 2) + (buttonHeight * 2)) + 1) && (clickPos.y <= (screenHeight / 2) + (buttonHeight * 3)) && clickPos.x >= (screenWidth / 2) - (buttonWidth/2) && clickPos.x <= (screenWidth / 2) + (buttonWidth/2))
+        {
+            std::cout << "DIFICIL" << std::endl;
+        }
+        // Boton Presonalizado
+        if (clickPos.y >= (((screenHeight / 2) + (buttonHeight * 5)) + 1) && (clickPos.y <= (screenHeight / 2) + (buttonHeight * 7)) && clickPos.x >= (screenWidth / 2) - buttonWidth && clickPos.x <= (screenWidth / 2) + buttonWidth)
+        {
+            std::cout << "PERSONALIZADO" << std::endl;
+        }
+        if (clickPos.x >= 0 && clickPos.x <= 30 && clickPos.y >= 0 && clickPos.y <= 30)
+        {
+            //music = false;
+            std::cout << "Music off " << std::endl;
+        }
+        break;
     }
 }
 
@@ -443,4 +491,20 @@ void Game::renderMenu(EntityMenu& entityMenu) {
     dst.h = entityMenu.getCurrentFrame().h;
     
     SDL_RenderCopy(renderer, entityMenu.getTex(), &src, &dst);
+}
+void Game::renderButton(EntityButton &entityButton )
+{
+    SDL_Rect src;
+    src.x = entityButton.getCurrentFrame().x;
+    src.y = entityButton.getCurrentFrame().y;
+    src.w = entityButton.getCurrentFrame().w;
+    src.h = entityButton.getCurrentFrame().h;
+
+    SDL_Rect dst;
+    dst.x = entityButton.getX();
+    dst.y = entityButton.getY();
+    dst.w = entityButton.getCurrentFrame().w;
+    dst.h = entityButton.getCurrentFrame().h;
+
+    SDL_RenderCopy(renderer, entityButton.getTex(), &src, &dst);
 }
