@@ -42,7 +42,7 @@ void Game::gameLoop() {
     // cargo los audios
     Mix_Music* backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
     // cargo texturas
-    SDL_Texture* mineTexture = loadTexture("res/img/mina-v2.png");
+    
     SDL_Texture* boxTexture = loadTexture("res/img/casilla.png");
 
     Mix_VolumeMusic(20);    // Volumen del audio
@@ -167,9 +167,8 @@ void Game::handleEvents() {
                         cleanUp();
                         gameState = GameState::EXIT;
                     }
-                    numCasilla(clickPos.x / 32, clickPos.y / 32);
+                    numCasilla(clickPos.x/32, clickPos.y/32);
                 }
-                
             }
             else if(evnt.button.button == SDL_BUTTON_RIGHT) {     // Click derecho 
                 // std::cout << "click derecho" << std::endl;
@@ -183,7 +182,7 @@ void Game::handleEvents() {
                         Pos firstClickPos = {firstClickPos.x = rand() % c, firstClickPos.y = rand() % f};
                         bombasAleat(firstClickPos);
                     }
-                    if(casillas[clickPos.y/32][clickPos.x/32].flag == true && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
+                    else if(casillas[clickPos.y/32][clickPos.x/32].flag == true && casillas[clickPos.y/32][clickPos.x/32].revealed == false) {
                         casillas[clickPos.y/32][clickPos.x/32].tex = boxTexture;
                         casillas[clickPos.y/32][clickPos.x/32].flag = false;
                     }
@@ -223,18 +222,17 @@ void Game::bombasAleat(const Pos& firstClickPos) {
         mineX.push_back(rand() % c);
         mineY.push_back(rand() % f);
 
-        if(casillas[mineY[i]][mineX[i]].mine == false && (mineX[i] != firstClickPos.x/32 && mineY[i] != firstClickPos.y/32) && mineX[i] != firstClickPos.x/32+1 && mineX[i] != firstClickPos.x/32-1  && mineY[i] != firstClickPos.y/32+1 && mineY[i] != firstClickPos.y/32-1) {
+        if(casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x/32 && mineY[i] == firstClickPos.y/32) || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {     
+            // Mientras la mina a crear ya existe se recalcula la posicion de la bomba
+            do {
+                mineX[i] = (rand() % c);
+                mineY[i] = (rand() % f);
+            } while(casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x/32 && mineY[i] == firstClickPos.y/32) || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1);
+
             casillas[mineY[i]][mineX[i]].mine = true;
             casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
-        else if(casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x/32 && mineY[i] == firstClickPos.y/32) || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {     
-            mineX[i] = rand() % c;
-            mineY[i] = rand() % f;
-            // Mientras la mina a crear ya existe se recalcula la posicion de la bomba
-            while(casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x/32 && mineY[i] == firstClickPos.y/32) || mineX[i] == firstClickPos.x/32+1 || mineX[i] == firstClickPos.x/32-1 || mineY[i] == firstClickPos.y/32+1 || mineY[i] == firstClickPos.y/32-1) {
-                mineX[i] = rand() % c;
-                mineY[i] = rand() % f;
-            }
+        else {
             casillas[mineY[i]][mineX[i]].mine = true;
             casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
@@ -248,10 +246,6 @@ void Game::bombasAleat(const Pos& firstClickPos) {
         contMasUno(mineX[i] - 1, mineY[i] + 1);
         contMasUno(mineX[i] + 1, mineY[i] - 1);
         contMasUno(mineX[i] + 1, mineY[i] + 1);
-    }
-
-    for(int i=0; i < b; ++i) {
-        std::cout << "Bomba " << i << std::endl << "X = " << mineX[i] << std::endl << "Y = " << mineY[i] << std::endl;
     }
 }
 
@@ -360,6 +354,7 @@ void Game::numCasilla(int clickX, int clickY) {
             break;*/
         default:
             casillas[clickY][clickX].tex = emptyBoxTexture;
+            casillas[clickY][clickX].revealed = true;
             break;
     }
 }
