@@ -199,6 +199,7 @@ void Game::handleEvents()
             // std::cout << "click derecho" << std::endl;
             SDL_Texture *boxTexture = loadTexture("GUI/inGame/stepedGrass.png");
             SDL_Texture *flagTexture = loadTexture("GUI/inGame/Flag.png");
+            Mix_Chunk* banderaeffect = Mix_LoadWAV("res/audio/pop.mp3");
 
             // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
             if (clickPos.x / 32 >= 0 && clickPos.x / 32 < c && clickPos.y / 32 >= 0 && clickPos.y / 32 < f)
@@ -217,6 +218,7 @@ void Game::handleEvents()
                 // sino, cambiar el valor a bandera
                 else if (casillas[clickPos.y / 32][clickPos.x / 32].flag == false && casillas[clickPos.y / 32][clickPos.x / 32].revealed == false)
                 {
+                    Mix_PlayChannel(-1,banderaeffect,0);
                     casillas[clickPos.y / 32][clickPos.x / 32].tex = flagTexture;
                     casillas[clickPos.y / 32][clickPos.x / 32].flag = true;
                 }
@@ -452,6 +454,7 @@ void Game::menuHandleEvents()
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
     int selectDif;
+    Mix_Chunk* clickeffect = Mix_LoadWAV("res/audio/click.mp3");
 
     switch (evnt.type)
     {
@@ -474,18 +477,21 @@ void Game::menuHandleEvents()
         }
         if ((clickPos.y >= screenHeight/2 - buttonHeight) && (clickPos.y <= screenHeight/2 + buttonHeight) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
         {
+            Mix_PlayChannel(-1,clickeffect,0);
             selectDif = 1;
             dificultad(selectDif);
         }
         // Boton "Medio"
         if ((clickPos.y >= screenHeight/2 + buttonHeight + 1) && (clickPos.y <= screenHeight/2 + buttonHeight*2) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
         {
+            Mix_PlayChannel(-1,clickeffect,0);
             selectDif = 2;
             dificultad(selectDif);
         }
         // Boton "Dificil"
         if ((clickPos.y >= screenHeight/2 + buttonHeight*2 + 1) && (clickPos.y <= screenHeight/2 + buttonHeight*3) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
         {
+            Mix_PlayChannel(-1,clickeffect,0);
             selectDif = 3;
             dificultad(selectDif);
         }
