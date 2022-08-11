@@ -54,6 +54,8 @@ class Game {
         SDL_Surface* icon;
 
         int screenWidth, screenHeight;
+        int buttonHeight = 66;
+        int buttonWidth = 200;
         int f, c, total, b;
         bool firstClick;
         std::vector<std::vector<Entity>> casillas;

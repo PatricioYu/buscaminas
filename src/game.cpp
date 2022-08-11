@@ -8,8 +8,6 @@ Game::Game()
     renderer = nullptr;
     screenWidth = 800;
     screenHeight = 800;
-    f = 10; // cantidad de filas
-    c = 40; // cantidad de columnas
     firstClick = false;
     gameState = GameState::PLAY;
 }
@@ -254,22 +252,21 @@ void Game::bombasAleat(const Pos &firstClickPos)
     {
         mineX.push_back(rand() % c);
         mineY.push_back(rand() % f);
-
-        if (casillas[mineY[i]][mineX[i]].mine == false && (mineX[i] != firstClickPos.x / 32 && mineY[i] != firstClickPos.y / 32) && mineX[i] != firstClickPos.x / 32 + 1 && mineX[i] != firstClickPos.x / 32 - 1 && mineY[i] != firstClickPos.y / 32 + 1 && mineY[i] != firstClickPos.y / 32 - 1)
+        
+        if (casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x / 32 && mineY[i] == firstClickPos.y / 32) || mineX[i] == firstClickPos.x / 32 + 1 || mineX[i] == firstClickPos.x / 32 - 1 || mineY[i] == firstClickPos.y / 32 + 1 || mineY[i] == firstClickPos.y / 32 - 1)
         {
-            casillas[mineY[i]][mineX[i]].mine = true;
-            casillas[mineY[i]][mineX[i]].tex = mineTexture;
-        }
-        else if (casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x / 32 && mineY[i] == firstClickPos.y / 32) || mineX[i] == firstClickPos.x / 32 + 1 || mineX[i] == firstClickPos.x / 32 - 1 || mineY[i] == firstClickPos.y / 32 + 1 || mineY[i] == firstClickPos.y / 32 - 1)
-        {
-            mineX[i] = rand() % c;
-            mineY[i] = rand() % f;
             // Mientras la mina a crear ya existe se recalcula la posicion de la bomba
-            while (casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x / 32 && mineY[i] == firstClickPos.y / 32) || mineX[i] == firstClickPos.x / 32 + 1 || mineX[i] == firstClickPos.x / 32 - 1 || mineY[i] == firstClickPos.y / 32 + 1 || mineY[i] == firstClickPos.y / 32 - 1)
+            do
             {
                 mineX[i] = rand() % c;
                 mineY[i] = rand() % f;
-            }
+            } while (casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x / 32 && mineY[i] == firstClickPos.y / 32) || mineX[i] == firstClickPos.x / 32 + 1 || mineX[i] == firstClickPos.x / 32 - 1 || mineY[i] == firstClickPos.y / 32 + 1 || mineY[i] == firstClickPos.y / 32 - 1);
+
+            casillas[mineY[i]][mineX[i]].mine = true;
+            casillas[mineY[i]][mineX[i]].tex = mineTexture;
+        }
+        else 
+        {
             casillas[mineY[i]][mineX[i]].mine = true;
             casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
@@ -287,9 +284,7 @@ void Game::bombasAleat(const Pos &firstClickPos)
 
     for (int i = 0; i < b; ++i)
     {
-        std::cout << "Bomba " << i << std::endl
-                  << "X = " << mineX[i] << std::endl
-                  << "Y = " << mineY[i] << std::endl;
+        std::cout << "Bomba " << i << std::endl << "X = " << mineX[i] << std::endl << "Y = " << mineY[i] << std::endl;
     }
 }
 
@@ -421,8 +416,7 @@ void Game::numCasilla(int clickX, int clickY)
         break;
     }
 }
-int buttonHeight = 66;
-int buttonWidth = 200;
+
 
 void Game::menu()
 {
@@ -432,13 +426,13 @@ void Game::menu()
     // Carga de texturas de los botones
     // Facil
     SDL_Texture *buttonFTexture = loadTexture("GUI/Menu/FacilB.png");
-    EntityButton buttonF((screenWidth / 2) - (buttonWidth / 2), (screenHeight / 2), buttonFTexture);
+    EntityButton buttonF(screenWidth/2 - buttonWidth/2, screenHeight/2, buttonFTexture);
     // Medio
     SDL_Texture *buttonMTexture = loadTexture("GUI/Menu/NormalB.png");
-    EntityButton buttonM((screenWidth / 2) - (buttonWidth / 2), ((screenHeight / 2) + buttonHeight + 1), buttonMTexture);
+    EntityButton buttonM(screenWidth/2 - buttonWidth/2, screenHeight/2 + buttonHeight + 1, buttonMTexture);
     // Dificil
     SDL_Texture *buttonDTexture = loadTexture("GUI/Menu/DificilB.png");
-    EntityButton buttonD((screenWidth / 2) - (buttonWidth / 2), (((screenHeight / 2) + (buttonHeight * 2)) + 1), buttonDTexture);
+    EntityButton buttonD(screenWidth/2 - buttonWidth/2, screenHeight/2 + buttonHeight * 2 + 1, buttonDTexture);
 
     while (finMenu == 0 && gameState != GameState::EXIT)
     {
@@ -453,11 +447,11 @@ void Game::menu()
     }
 }
 
-int eligeDif;
 void Game::menuHandleEvents()
 {
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
+    int selectDif;
 
     switch (evnt.type)
     {
@@ -478,72 +472,75 @@ void Game::menuHandleEvents()
 
             /* dificultad(eligeDif); */
         }
-        if (clickPos.y >= (screenHeight / 2) - buttonHeight && clickPos.y <= (screenHeight / 2) + buttonHeight && clickPos.x >= (screenWidth / 2) - (buttonWidth / 2) && clickPos.x <= (screenWidth / 2) + (buttonWidth / 2))
+        if ((clickPos.y >= screenHeight/2 - buttonHeight) && (clickPos.y <= screenHeight/2 + buttonHeight) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
         {
-            std::cout << "FACIL" << std::endl;
-            eligeDif = 1;
-            dificultad(eligeDif);
+            selectDif = 1;
+            dificultad(selectDif);
         }
         // Boton "Medio"
-        if (clickPos.y >= ((screenHeight / 2) + buttonHeight + 1) && (clickPos.y <= (screenHeight / 2) + (buttonHeight * 2)) && clickPos.x >= (screenWidth / 2) - (buttonWidth / 2) && clickPos.x <= (screenWidth / 2) + (buttonWidth / 2))
+        if ((clickPos.y >= screenHeight/2 + buttonHeight + 1) && (clickPos.y <= screenHeight/2 + buttonHeight*2) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
         {
-            std::cout << "NORMAL" << std::endl;
-            eligeDif = 2;
-            dificultad(eligeDif);
+            selectDif = 2;
+            dificultad(selectDif);
         }
         // Boton "Dificil"
-        if (clickPos.y >= (((screenHeight / 2) + (buttonHeight * 2)) + 1) && (clickPos.y <= (screenHeight / 2) + (buttonHeight * 3)) && clickPos.x >= (screenWidth / 2) - (buttonWidth / 2) && clickPos.x <= (screenWidth / 2) + (buttonWidth / 2))
+        if ((clickPos.y >= screenHeight/2 + buttonHeight*2 + 1) && (clickPos.y <= screenHeight/2 + buttonHeight*3) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
         {
-            std::cout << "DIFICIL" << std::endl;
-            eligeDif = 3;
-            dificultad(eligeDif);
+            selectDif = 3;
+            dificultad(selectDif);
         }
         // Boton Presonalizado
-/*         if (clickPos.y >= (((screenHeight / 2) + (buttonHeight * 5)) + 1) && (clickPos.y <= (screenHeight / 2) + (buttonHeight * 7)) && clickPos.x >= (screenWidth / 2) - buttonWidth && clickPos.x <= (screenWidth / 2) + buttonWidth)
+        /*  
+        if (clickPos.y >= screenHeight/2 + buttonHeight*5 + 1 && clickPos.y <= screenHeight/2 + buttonHeight*7 && clickPos.x >= screenWidth/2 - buttonWidth && clickPos.x <= screenWidth/2 + buttonWidth)
         {
             std::cout << "PERSONALIZADO" << std::endl;
             eligeDif = 4;
             dificultad(eligeDif);
-        } */
-        if (clickPos.x >= 0 && clickPos.x <= 30 && clickPos.y >= 0 && clickPos.y <= 30)
+        } 
+        */
+        if (clickPos.x >= 0 && clickPos.x <= 30 && clickPos.y >= 0 && clickPos.y <= 30 && music==true)
         {
-            // music = false;
+            Mix_VolumeMusic(0);
+            music = false;
             std::cout << "Music off " << std::endl;
         }
         break;
     }
 }
 
-void Game::dificultad(int eligeDif)
+void Game::dificultad(int selectDif)
 {
-    switch (eligeDif)
+    switch (selectDif)
     {
     case 1:
-        std::cout << "Case = " <<eligeDif << std::endl;
+        // std::cout << "Case = " <<selectDif << std::endl;
         b = 10;
         f = 8;
         c = 8;
         finMenu = 1;
         break;
     case 2:
-        std::cout << "Case = " <<eligeDif << std::endl;
+        // std::cout << "Case = " <<selectDif << std::endl;
         b = 40;
         f = 16;
         c = 16;
         finMenu = 1;
         break;
     case 3:
-        std::cout << "Case = " <<eligeDif << std::endl;
+        // std::cout << "Case = " << selectDif << std::endl;
         b = 99;
         f = 16;
         c = 30;
         finMenu = 1;
         break;
+    /*
     case 4:
-        std::cout << "Case = " <<eligeDif << std::endl;
+        std::cout << "Case = " <<selectDif << std::endl;
         finMenu = 1;
         break;
+    */
     }
+    SDL_SetWindowSize(window, c*32, f*32);
 }
 
 void Game::renderMenu(EntityMenu &entityMenu)

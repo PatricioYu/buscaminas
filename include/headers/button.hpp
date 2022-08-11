@@ -16,5 +16,5 @@ class EntityButton {
 
     private:
         SDL_Rect currentFrame;      
-        float x, y;
+        float x, y;   
 };
