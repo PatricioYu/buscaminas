@@ -54,6 +54,8 @@ void Game::gameLoop()
 
     menu();
 
+    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);  // centro la ventana luego de la eleccion de dificultad
+
     // Creo la matriz de casillas
     for (int i = 0; i < f; i++)
     {
