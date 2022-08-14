@@ -233,6 +233,25 @@ void Game::handleEvents()
     }
 }
 
+void Game::timer()
+{
+
+        //Unsigned es un tipo de dato como "int" la diferencia es que "unsigned" no usa enteros negativos, solo positivos
+    /*
+    Me voy a olvidar de esto... asique:
+        el rango de posiciones posibles que tiene "int" es de -2.147.483.648 a 2.147.483.647
+        en cambio el rango de posiciones de que tiene "unsigned" es de 0 a 4.294.967.295, exactamente la misma cantidad de posicion posibles la unica diferencia es que nunca son negativos
+    */
+   //Si el juego llega a estar 4294967,295 segundos abierto nose que podria llegar a pasar
+   //(4294967,295 segundos son 8,17 años)
+    unsigned time = SDL_GetTicks();
+    unsigned now = SDL_GetTicks();
+    unsigned delta_time = now - time;
+
+    time = now;
+
+    std::cout << "Time = " << time/1000 << " segundos";
+    }
 
 
 // Si es el primer click se activa el posicionamiento de las minas de forma aleatoria
@@ -604,25 +623,4 @@ void Game::renderButton(EntityButton &entityButton)
     dst.h = entityButton.getCurrentFrame().h;
 
     SDL_RenderCopy(renderer, entityButton.getTex(), &src, &dst);
-}
-
-void Game::timer()
-{
-    if(firstClick){
-        //Unsigned es un tipo de dato como "int" la diferencia es que "unsigned" no usa enteros negativos, solo positivos
-    /*
-    Me voy a olvidar de esto... asique:
-        el rango de posiciones posibles que tiene "int" es de -2.147.483.648 a 2.147.483.647
-        en cambio el rango de posiciones de que tiene "unsigned" es de 0 a 4.294.967.295, exactamente la misma cantidad de posicion posibles la unica diferencia es que nunca son negativos
-    */
-   //Si el juego llega a estar 4294967,295 segundos abierto nose que podria llegar a pasar
-   //(4294967,295 segundos son 8,17 años)
-    unsigned time = SDL_GetTicks();
-    unsigned now = SDL_GetTicks();
-    unsigned delta_time = now - time;
-
-    time = now;
-
-    std::cout << "Time = " << time/1000 << " segundos";
-    }
 }

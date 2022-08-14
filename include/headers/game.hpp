@@ -8,6 +8,7 @@
 #include "headers/entity.hpp"
 #include "headers/menu.hpp"
 #include "headers/button.hpp"
+/* #include "headers/gameOver.hpp" */
 
 enum class GameState {PLAY, EXIT};
 typedef struct {
@@ -29,6 +30,7 @@ class Game {
 
         void run();
         void menu();
+/*         void gameOver(); */
         void onFirstClick();
         void bombasAleat(const Pos& firstClickPos);
         void contMasUno(int x, int y);
