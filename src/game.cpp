@@ -429,13 +429,13 @@ void Game::menu()
 
     // Carga de texturas de los botones
     // Facil
-    SDL_Texture *buttonFTexture = loadTexture("res/img/Menu/FacilB.png");
+    SDL_Texture *buttonFTexture = loadTexture("res/img/Menu/FacilN.png");
     EntityButton buttonF(screenWidth/2 - buttonWidth/2, screenHeight/2, buttonFTexture);
     // Medio
-    SDL_Texture *buttonMTexture = loadTexture("res/img/Menu/NormalB.png");
+    SDL_Texture *buttonMTexture = loadTexture("res/img/Menu/MedioN.png");
     EntityButton buttonM(screenWidth/2 - buttonWidth/2, screenHeight/2 + buttonHeight + 1, buttonMTexture);
     // Dificil
-    SDL_Texture *buttonDTexture = loadTexture("res/img/Menu/DificilB.png");
+    SDL_Texture *buttonDTexture = loadTexture("res/img/Menu/DificilN.png");
     EntityButton buttonD(screenWidth/2 - buttonWidth/2, screenHeight/2 + buttonHeight * 2 + 1, buttonDTexture);
 
     while (finMenu == 0 && gameState != GameState::EXIT)
