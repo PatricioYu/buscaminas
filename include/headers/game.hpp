@@ -33,6 +33,7 @@ class Game {
         void bombasAleat(const Pos& firstClickPos);
         void contMasUno(int x, int y);
         void numCasilla(int clickX, int clickY);
+        void timer();
 
     private:
         void init(const char* title, int x, int y, int w, int h, Uint32 flags);
@@ -40,6 +41,7 @@ class Game {
         void handleEvents();
         void cleanUp();
         void cleanMusic();
+
         //menu
         void menuHandleEvents();
         void dificultad(int eligeDif);

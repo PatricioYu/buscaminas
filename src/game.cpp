@@ -20,6 +20,8 @@ void Game::run()
     gameLoop();
 }
 
+
+
 // Inicializa la ventana
 void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
 {
@@ -43,7 +45,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
 void Game::gameLoop()
 {
     // cargo los audios
-    //Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
+    // Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
     Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/The_Shire.mp3");
     // cargo texturas
     SDL_Texture *mineTexture = loadTexture("res/img/inGame/mina-v2.png");
@@ -54,7 +56,7 @@ void Game::gameLoop()
 
     menu();
 
-    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);  // centro la ventana luego de la eleccion de dificultad
+    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED); // centro la ventana luego de la eleccion de dificultad
 
     // Creo la matriz de casillas
     for (int i = 0; i < f; i++)
@@ -86,6 +88,7 @@ void Game::gameLoop()
 
         display();
     }
+        timer();
 }
 
 // Carga las texturas
@@ -201,7 +204,7 @@ void Game::handleEvents()
             // std::cout << "click derecho" << std::endl;
             SDL_Texture *boxTexture = loadTexture("res/img/inGame/stepedGrass.png");
             SDL_Texture *flagTexture = loadTexture("res/img/inGame/Flag.png");
-            Mix_Chunk* banderaeffect = Mix_LoadWAV("res/audio/pop.mp3");
+            Mix_Chunk *banderaeffect = Mix_LoadWAV("res/audio/pop.mp3");
 
             // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
             if (clickPos.x / 32 >= 0 && clickPos.x / 32 < c && clickPos.y / 32 >= 0 && clickPos.y / 32 < f)
@@ -220,7 +223,7 @@ void Game::handleEvents()
                 // sino, cambiar el valor a bandera
                 else if (casillas[clickPos.y / 32][clickPos.x / 32].flag == false && casillas[clickPos.y / 32][clickPos.x / 32].revealed == false)
                 {
-                    Mix_PlayChannel(-1,banderaeffect,0);
+                    Mix_PlayChannel(-1, banderaeffect, 0);
                     casillas[clickPos.y / 32][clickPos.x / 32].tex = flagTexture;
                     casillas[clickPos.y / 32][clickPos.x / 32].flag = true;
                 }
@@ -229,6 +232,8 @@ void Game::handleEvents()
         break;
     }
 }
+
+
 
 // Si es el primer click se activa el posicionamiento de las minas de forma aleatoria
 void Game::onFirstClick()
@@ -242,6 +247,8 @@ void Game::onFirstClick()
     // std::cout << "FirstClick y: " << (firstClickPos.y/32)/32 << std::endl;
 
     bombasAleat(firstClickPos);
+
+
 }
 
 // Se posicionan las minas de forma aleatoria y generando una pileta en las coordenadas del primer click
@@ -256,7 +263,7 @@ void Game::bombasAleat(const Pos &firstClickPos)
     {
         mineX.push_back(rand() % c);
         mineY.push_back(rand() % f);
-        
+
         if (casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x / 32 && mineY[i] == firstClickPos.y / 32) || mineX[i] == firstClickPos.x / 32 + 1 || mineX[i] == firstClickPos.x / 32 - 1 || mineY[i] == firstClickPos.y / 32 + 1 || mineY[i] == firstClickPos.y / 32 - 1)
         {
             // Mientras la mina a crear ya existe se recalcula la posicion de la bomba
@@ -269,7 +276,7 @@ void Game::bombasAleat(const Pos &firstClickPos)
             casillas[mineY[i]][mineX[i]].mine = true;
             casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
-        else 
+        else
         {
             casillas[mineY[i]][mineX[i]].mine = true;
             casillas[mineY[i]][mineX[i]].tex = mineTexture;
@@ -288,7 +295,9 @@ void Game::bombasAleat(const Pos &firstClickPos)
 
     for (int i = 0; i < b; ++i)
     {
-        std::cout << "Bomba " << i << std::endl << "X = " << mineX[i] << std::endl << "Y = " << mineY[i] << std::endl;
+        std::cout << "Bomba " << i << std::endl
+                  << "X = " << mineX[i] << std::endl
+                  << "Y = " << mineY[i] << std::endl;
     }
 }
 
@@ -421,7 +430,6 @@ void Game::numCasilla(int clickX, int clickY)
     }
 }
 
-
 void Game::menu()
 {
     SDL_Texture *menuTexture = loadTexture("res/img/Menu/menu.png");
@@ -430,13 +438,19 @@ void Game::menu()
     // Carga de texturas de los botones
     // Facil
     SDL_Texture *buttonFTexture = loadTexture("res/img/Menu/FacilN.png");
-    EntityButton buttonF(screenWidth/2 - buttonWidth/2, screenHeight/2, buttonFTexture);
+    EntityButton buttonF(screenWidth / 2 - buttonWidth / 2, screenHeight / 2, buttonFTexture);
     // Medio
     SDL_Texture *buttonMTexture = loadTexture("res/img/Menu/MedioN.png");
-    EntityButton buttonM(screenWidth/2 - buttonWidth/2, screenHeight/2 + buttonHeight + 1, buttonMTexture);
+    EntityButton buttonM(screenWidth / 2 - buttonWidth / 2, screenHeight / 2 + buttonHeight + 1, buttonMTexture);
     // Dificil
     SDL_Texture *buttonDTexture = loadTexture("res/img/Menu/DificilN.png");
-    EntityButton buttonD(screenWidth/2 - buttonWidth/2, screenHeight/2 + buttonHeight * 2 + 1, buttonDTexture);
+    EntityButton buttonD(screenWidth / 2 - buttonWidth / 2, screenHeight / 2 + buttonHeight * 2 + 1, buttonDTexture);
+
+    SDL_Texture *musicOnButtonTexture = loadTexture("res/img/Menu/MusicOn.png");
+    Entity musicB(0, 0, musicOnButtonTexture);
+
+    SDL_Texture *musicOffButtonTexture = loadTexture("res/img/Menu/MusicOff.png");
+    Entity musicOB(0, 0, musicOffButtonTexture);
 
     while (finMenu == 0 && gameState != GameState::EXIT)
     {
@@ -446,6 +460,14 @@ void Game::menu()
         renderButton(buttonF);
         renderButton(buttonM);
         renderButton(buttonD);
+        if (music)
+        {
+            render(musicB);
+        }
+        else
+        {
+            render(musicOB);
+        }
 
         display();
     }
@@ -456,7 +478,7 @@ void Game::menuHandleEvents()
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
     int selectDif;
-    Mix_Chunk* clickeffect = Mix_LoadWAV("res/audio/click.mp3");
+    Mix_Chunk *clickeffect = Mix_LoadWAV("res/audio/click.mp3");
 
     switch (evnt.type)
     {
@@ -477,36 +499,36 @@ void Game::menuHandleEvents()
 
             /* dificultad(eligeDif); */
         }
-        if ((clickPos.y >= screenHeight/2 - buttonHeight) && (clickPos.y <= screenHeight/2 + buttonHeight) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
+        if ((clickPos.y >= screenHeight / 2 - buttonHeight) && (clickPos.y <= screenHeight / 2 + buttonHeight) && (clickPos.x >= screenWidth / 2 - buttonWidth / 2) && (clickPos.x <= screenWidth / 2 + buttonWidth / 2))
         {
-            Mix_PlayChannel(-1,clickeffect,0);
+            Mix_PlayChannel(-1, clickeffect, 0);
             selectDif = 1;
             dificultad(selectDif);
         }
         // Boton "Medio"
-        if ((clickPos.y >= screenHeight/2 + buttonHeight + 1) && (clickPos.y <= screenHeight/2 + buttonHeight*2) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
+        if ((clickPos.y >= screenHeight / 2 + buttonHeight + 1) && (clickPos.y <= screenHeight / 2 + buttonHeight * 2) && (clickPos.x >= screenWidth / 2 - buttonWidth / 2) && (clickPos.x <= screenWidth / 2 + buttonWidth / 2))
         {
-            Mix_PlayChannel(-1,clickeffect,0);
+            Mix_PlayChannel(-1, clickeffect, 0);
             selectDif = 2;
             dificultad(selectDif);
         }
         // Boton "Dificil"
-        if ((clickPos.y >= screenHeight/2 + buttonHeight*2 + 1) && (clickPos.y <= screenHeight/2 + buttonHeight*3) && (clickPos.x >= screenWidth/2 - buttonWidth/2) && (clickPos.x <= screenWidth/2 + buttonWidth/2))
+        if ((clickPos.y >= screenHeight / 2 + buttonHeight * 2 + 1) && (clickPos.y <= screenHeight / 2 + buttonHeight * 3) && (clickPos.x >= screenWidth / 2 - buttonWidth / 2) && (clickPos.x <= screenWidth / 2 + buttonWidth / 2))
         {
-            Mix_PlayChannel(-1,clickeffect,0);
+            Mix_PlayChannel(-1, clickeffect, 0);
             selectDif = 3;
             dificultad(selectDif);
         }
         // Boton Presonalizado
-        /*  
+        /*
         if (clickPos.y >= screenHeight/2 + buttonHeight*5 + 1 && clickPos.y <= screenHeight/2 + buttonHeight*7 && clickPos.x >= screenWidth/2 - buttonWidth && clickPos.x <= screenWidth/2 + buttonWidth)
         {
             std::cout << "PERSONALIZADO" << std::endl;
             eligeDif = 4;
             dificultad(eligeDif);
-        } 
+        }
         */
-        if (clickPos.x >= 0 && clickPos.x <= 30 && clickPos.y >= 0 && clickPos.y <= 30 && music==true)
+        if (clickPos.x >= 0 && clickPos.x <= 30 && clickPos.y >= 0 && clickPos.y <= 30 && music == true)
         {
             Mix_VolumeMusic(0);
             music = false;
@@ -541,14 +563,14 @@ void Game::dificultad(int selectDif)
         c = 30;
         finMenu = 1;
         break;
-    /*
-    case 4:
-        std::cout << "Case = " <<selectDif << std::endl;
-        finMenu = 1;
-        break;
-    */
+        /*
+        case 4:
+            std::cout << "Case = " <<selectDif << std::endl;
+            finMenu = 1;
+            break;
+        */
     }
-    SDL_SetWindowSize(window, c*32, f*32);
+    SDL_SetWindowSize(window, c * 32, f * 32);
 }
 
 void Game::renderMenu(EntityMenu &entityMenu)
@@ -582,4 +604,25 @@ void Game::renderButton(EntityButton &entityButton)
     dst.h = entityButton.getCurrentFrame().h;
 
     SDL_RenderCopy(renderer, entityButton.getTex(), &src, &dst);
+}
+
+void Game::timer()
+{
+    if(firstClick){
+        //Unsigned es un tipo de dato como "int" la diferencia es que "unsigned" no usa enteros negativos, solo positivos
+    /*
+    Me voy a olvidar de esto... asique:
+        el rango de posiciones posibles que tiene "int" es de -2.147.483.648 a 2.147.483.647
+        en cambio el rango de posiciones de que tiene "unsigned" es de 0 a 4.294.967.295, exactamente la misma cantidad de posicion posibles la unica diferencia es que nunca son negativos
+    */
+   //Si el juego llega a estar 4294967,295 segundos abierto nose que podria llegar a pasar
+   //(4294967,295 segundos son 8,17 años)
+    unsigned time = SDL_GetTicks();
+    unsigned now = SDL_GetTicks();
+    unsigned delta_time = now - time;
+
+    time = now;
+
+    std::cout << "Time = " << time/1000 << " segundos";
+    }
 }
