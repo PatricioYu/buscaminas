@@ -45,7 +45,7 @@ class Game {
         void dificultad(int eligeDif);
         void renderMenu(EntityMenu& entity);
         int finMenu = 0;
-        
+        bool music = true;
         //boton
         void renderButton(EntityButton& entity);
 

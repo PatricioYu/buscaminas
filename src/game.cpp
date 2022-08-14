@@ -30,7 +30,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    icon = IMG_Load("GUI/inGame/MinaTerrestre.png");
+    icon = IMG_Load("res/img/inGame/MinaTerrestre.png");
 
     // Establece el ícono de la ventana
     SDL_SetWindowIcon(window, icon);
@@ -38,7 +38,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     // Inicio SDL mixer
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
-bool music = true;
+
 // Ciclo del juego
 void Game::gameLoop()
 {
@@ -46,8 +46,8 @@ void Game::gameLoop()
     //Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
     Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/The_Shire.mp3");
     // cargo texturas
-    SDL_Texture *mineTexture = loadTexture("res/img/mina-v2.png");
-    SDL_Texture *boxTexture = loadTexture("GUI/inGame/Grass.png");
+    SDL_Texture *mineTexture = loadTexture("res/img/inGame/mina-v2.png");
+    SDL_Texture *boxTexture = loadTexture("res/img/inGame/Grass.png");
 
     Mix_VolumeMusic(music ? 20 : 0);    // Volumen del audio
     Mix_PlayMusic(backgroundMusic, -1); // Reproduzco el audio
@@ -199,8 +199,8 @@ void Game::handleEvents()
         else if (evnt.button.button == SDL_BUTTON_RIGHT)
         { // Click derecho
             // std::cout << "click derecho" << std::endl;
-            SDL_Texture *boxTexture = loadTexture("GUI/inGame/stepedGrass.png");
-            SDL_Texture *flagTexture = loadTexture("GUI/inGame/Flag.png");
+            SDL_Texture *boxTexture = loadTexture("res/img/inGame/stepedGrass.png");
+            SDL_Texture *flagTexture = loadTexture("res/img/inGame/Flag.png");
             Mix_Chunk* banderaeffect = Mix_LoadWAV("res/audio/pop.mp3");
 
             // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
@@ -247,7 +247,7 @@ void Game::onFirstClick()
 // Se posicionan las minas de forma aleatoria y generando una pileta en las coordenadas del primer click
 void Game::bombasAleat(const Pos &firstClickPos)
 {
-    SDL_Texture *mineTexture = loadTexture("GUI/inGame/MinaTerrestre.png");
+    SDL_Texture *mineTexture = loadTexture("res/img/inGame/MinaTerrestre.png");
     srand(time(NULL));
     std::vector<int> mineX;
     std::vector<int> mineY;
@@ -304,10 +304,10 @@ void Game::contMasUno(int x, int y)
 // Selecciona el número que tiene la casilla según la cantidad de bombas que hay alrededor
 void Game::numCasilla(int clickX, int clickY)
 {
-    SDL_Texture *emptyBoxTexture = loadTexture("GUI/inGame/Soil.png");
-    SDL_Texture *boxOneTexture = loadTexture("GUI/inGame/Uno.png");
-    SDL_Texture *boxTwoTexture = loadTexture("GUI/inGame/Dos.png");
-    SDL_Texture *boxThreeTexture = loadTexture("GUI/inGame/Tres.png");
+    SDL_Texture *emptyBoxTexture = loadTexture("res/img/inGame/Soil.png");
+    SDL_Texture *boxOneTexture = loadTexture("res/img/inGame/Uno.png");
+    SDL_Texture *boxTwoTexture = loadTexture("res/img/inGame/Dos.png");
+    SDL_Texture *boxThreeTexture = loadTexture("res/img/inGame/Tres.png");
 
     switch (casillas[clickY][clickX].cont)
     {
@@ -424,18 +424,18 @@ void Game::numCasilla(int clickX, int clickY)
 
 void Game::menu()
 {
-    SDL_Texture *menuTexture = loadTexture("GUI/Menu/menu.png");
+    SDL_Texture *menuTexture = loadTexture("res/img/Menu/menu.png");
     EntityMenu menu(0, 0, menuTexture);
 
     // Carga de texturas de los botones
     // Facil
-    SDL_Texture *buttonFTexture = loadTexture("GUI/Menu/FacilB.png");
+    SDL_Texture *buttonFTexture = loadTexture("res/img/Menu/FacilB.png");
     EntityButton buttonF(screenWidth/2 - buttonWidth/2, screenHeight/2, buttonFTexture);
     // Medio
-    SDL_Texture *buttonMTexture = loadTexture("GUI/Menu/NormalB.png");
+    SDL_Texture *buttonMTexture = loadTexture("res/img/Menu/NormalB.png");
     EntityButton buttonM(screenWidth/2 - buttonWidth/2, screenHeight/2 + buttonHeight + 1, buttonMTexture);
     // Dificil
-    SDL_Texture *buttonDTexture = loadTexture("GUI/Menu/DificilB.png");
+    SDL_Texture *buttonDTexture = loadTexture("res/img/Menu/DificilB.png");
     EntityButton buttonD(screenWidth/2 - buttonWidth/2, screenHeight/2 + buttonHeight * 2 + 1, buttonDTexture);
 
     while (finMenu == 0 && gameState != GameState::EXIT)
