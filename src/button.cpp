@@ -1,6 +1,6 @@
 #include "headers/button.hpp"
 
-EntityButton::EntityButton(float x, float y, SDL_Texture* tex) :x(x), y(y), tex(tex){
+EntityButton::EntityButton(float x, float y, SDL_Texture* tex) :x(x), y(y), tex(tex) {
     currentFrame.x = 0;
     currentFrame.y = 0;
     currentFrame.w = 200;

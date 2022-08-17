@@ -1,6 +1,6 @@
 #include "headers/entity.hpp"
 
-Entity::Entity(float x, float y, SDL_Texture* tex) :x(x), y(y), tex(tex){
+Entity::Entity(float x, float y, SDL_Texture* tex) :x(x), y(y), tex(tex) {
     currentFrame.x = 0;
     currentFrame.y = 0;
     currentFrame.w = 32;

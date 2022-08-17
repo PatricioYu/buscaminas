@@ -1,6 +1,6 @@
 #include "headers/menu.hpp"
 
-EntityMenu::EntityMenu(float x, float y, SDL_Texture* tex) :x(x), y(y), tex(tex){
+EntityMenu::EntityMenu(float x, float y, SDL_Texture* tex) :x(x), y(y), tex(tex) {
     currentFrame.x = 0;
     currentFrame.y = 0;
     currentFrame.w = 800;
