@@ -43,11 +43,13 @@ class Game {
         void handleEvents();
         void cleanUp();
         void cleanMusic();
-
+        void revealMines();
         //menu
         void menuHandleEvents();
         void dificultad(int eligeDif);
         void renderMenu(EntityMenu& entity);
+        void sceneWin();
+
         int finMenu = 0;
         bool music = true;
         //boton
@@ -60,8 +62,8 @@ class Game {
         int screenWidth, screenHeight;
         int buttonHeight = 66;
         int buttonWidth = 200;
-        int f, c, total, b;
-        bool firstClick;
+        int f, c, b, win, contWin = 0;
+        bool firstClick, hasWon = false, dontTouch = false;
         std::vector<std::vector<Entity>> casillas;
 
         GameState gameState;

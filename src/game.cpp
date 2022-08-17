@@ -48,13 +48,14 @@ void Game::gameLoop()
     // Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/dbz.mp3");
     Mix_Music *backgroundMusic = Mix_LoadMUS("res/audio/The_Shire.mp3");
     // cargo texturas
-    SDL_Texture *mineTexture = loadTexture("res/img/inGame/mina-v2.png");
     SDL_Texture *boxTexture = loadTexture("res/img/inGame/Grass.png");
 
     Mix_VolumeMusic(music ? 20 : 0);    // Volumen del audio
     Mix_PlayMusic(backgroundMusic, -1); // Reproduzco el audio
 
     menu();
+
+    win = (f * c) - b;
 
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED); // centro la ventana luego de la eleccion de dificultad
 
@@ -70,25 +71,34 @@ void Game::gameLoop()
         casillas.push_back(casilla);
     }
 
-    total = (f * c) - b;
-
     while (gameState != GameState::EXIT)
     {
         handleEvents();
-        clear();
 
         // Renderizo las casillas
-        for (int i = 0; i < f; i++)
-        {
-            for (int j = 0; j < c; j++)
+        if(hasWon==false) {
+            clear();
+            for (int i = 0; i < f; i++)
             {
-                render(casillas[i][j]);
+                for (int j = 0; j < c; j++)
+                {
+                    render(casillas[i][j]);
+                }
             }
+        }
+        else {
+            sceneWin();
         }
 
         display();
-    }
+
+        if (contWin == win && hasWon == false) {
+            hasWon = true;
+        }
+    }   
+
         timer();
+
 }
 
 // Carga las texturas
@@ -184,19 +194,20 @@ void Game::handleEvents()
         if (evnt.button.button == SDL_BUTTON_LEFT)
         { // Click izquierdo
             // std::cout << "click" << std::endl;
-            if (clickPos.x / 32 >= 0 && clickPos.x / 32 < c && clickPos.y / 32 >= 0 && clickPos.y / 32 < f && casillas[clickPos.y / 32][clickPos.x / 32].flag == false)
+            if (clickPos.x / 32 >= 0 && clickPos.x / 32 < c && clickPos.y / 32 >= 0 && clickPos.y / 32 < f && casillas[clickPos.y / 32][clickPos.x / 32].flag == false && dontTouch == false)
             {
                 if (!firstClick)
                 {
                     onFirstClick();
                 }
-                else if (casillas[clickPos.y / 32][clickPos.x / 32].mine == true)
+                if (casillas[clickPos.y / 32][clickPos.x / 32].mine == true)
                 {
                     std::cout << "Perdiste" << std::endl;
-                    cleanUp();
-                    gameState = GameState::EXIT;
+                    revealMines();
                 }
-                numCasilla(clickPos.x / 32, clickPos.y / 32);
+                else if (casillas[clickPos.y / 32][clickPos.x / 32].revealed == false) {
+                    numCasilla(clickPos.x / 32, clickPos.y / 32);
+                }
             }
         }
         else if (evnt.button.button == SDL_BUTTON_RIGHT)
@@ -207,7 +218,7 @@ void Game::handleEvents()
             Mix_Chunk *banderaeffect = Mix_LoadWAV("res/audio/pop.mp3");
 
             // Si la casilla clickeada tiene la textura de una bandera cambiarla a la textura de casilla sin revelar
-            if (clickPos.x / 32 >= 0 && clickPos.x / 32 < c && clickPos.y / 32 >= 0 && clickPos.y / 32 < f)
+            if (clickPos.x / 32 >= 0 && clickPos.x / 32 < c && clickPos.y / 32 >= 0 && clickPos.y / 32 < f && dontTouch == false)
             {
                 if (!firstClick)
                 {
@@ -266,14 +277,26 @@ void Game::onFirstClick()
     // std::cout << "FirstClick y: " << (firstClickPos.y/32)/32 << std::endl;
 
     bombasAleat(firstClickPos);
+}
 
+//Revela las bombas de las casillas cuando pierde
+void Game::revealMines(){
+    SDL_Texture *mineTexture = loadTexture("res/img/inGame/MinaTerrestre.png");
 
+    for(int i=0; i<c ; ++i){
+        for(int j=0; j<f; ++j){
+            std::cout << i << " " << j << std::endl;
+            if(casillas[i][j].mine == true){
+                casillas[i][j].tex = mineTexture;
+            }
+        }
+    }
+    dontTouch = true;
 }
 
 // Se posicionan las minas de forma aleatoria y generando una pileta en las coordenadas del primer click
 void Game::bombasAleat(const Pos &firstClickPos)
 {
-    SDL_Texture *mineTexture = loadTexture("res/img/inGame/MinaTerrestre.png");
     srand(time(NULL));
     std::vector<int> mineX;
     std::vector<int> mineY;
@@ -293,12 +316,12 @@ void Game::bombasAleat(const Pos &firstClickPos)
             } while (casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x / 32 && mineY[i] == firstClickPos.y / 32) || mineX[i] == firstClickPos.x / 32 + 1 || mineX[i] == firstClickPos.x / 32 - 1 || mineY[i] == firstClickPos.y / 32 + 1 || mineY[i] == firstClickPos.y / 32 - 1);
 
             casillas[mineY[i]][mineX[i]].mine = true;
-            casillas[mineY[i]][mineX[i]].tex = mineTexture;
+            //casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
         else
         {
             casillas[mineY[i]][mineX[i]].mine = true;
-            casillas[mineY[i]][mineX[i]].tex = mineTexture;
+            //casillas[mineY[i]][mineX[i]].tex = mineTexture;
         }
 
         // Cada bomba suma 1 al contador de las casillas adyacentes
@@ -336,12 +359,18 @@ void Game::numCasilla(int clickX, int clickY)
     SDL_Texture *boxOneTexture = loadTexture("res/img/inGame/Uno.png");
     SDL_Texture *boxTwoTexture = loadTexture("res/img/inGame/Dos.png");
     SDL_Texture *boxThreeTexture = loadTexture("res/img/inGame/Tres.png");
+    SDL_Texture *boxFourTexture = loadTexture("res/img/inGame/Cuatro.png");
+    SDL_Texture *boxFiveTexture = loadTexture("res/img/inGame/Cinco.png");
+    SDL_Texture *boxSixTexture = loadTexture("res/img/inGame/Seis.png");
+    SDL_Texture *boxSevenTexture = loadTexture("res/img/inGame/Siete.png");
+    SDL_Texture *boxEightTexture = loadTexture("res/img/inGame/Ocho.png");
 
     switch (casillas[clickY][clickX].cont)
     {
     case 0:
         casillas[clickY][clickX].tex = emptyBoxTexture;
         casillas[clickY][clickX].revealed = true;
+        contWin += 1;
 
         // Si es 0 hay que revelar las casillas que estan alrededor llamando de nuevo a esta funcion revelando los puntos cardinales
         // Primero verifica que la casilla a revelar existe declarada en el tablero
@@ -414,37 +443,46 @@ void Game::numCasilla(int clickX, int clickY)
     case 1:
         casillas[clickY][clickX].tex = boxOneTexture;
         casillas[clickY][clickX].revealed = true;
+        contWin += 1;
         break;
     case 2:
         casillas[clickY][clickX].tex = boxTwoTexture;
         casillas[clickY][clickX].revealed = true;
+        contWin += 1;
         break;
     case 3:
         casillas[clickY][clickX].tex = boxThreeTexture;
         casillas[clickY][clickX].revealed = true;
+        contWin += 1;
         break;
-    /*case 4:
+    case 4:
         casillas[clickY][clickX].tex = boxFourTexture;
         casillas[clickY][clickX].revealed = true;
+        contWin += 1;
         break;
     case 5:
         casillas[clickY][clickX].tex = boxFiveTexture;
         casillas[clickY][clickX].revealed = true;
+        contWin += 1;
         break;
     case 6:
         casillas[clickY][clickX].tex = boxSixTexture;
         casillas[clickY][clickX].revealed = true;
+        contWin += 1;
         break;
     case 7:
         casillas[clickY][clickX].tex = boxSevenTexture;
         casillas[clickY][clickX].revealed = true;
+        contWin += 1;
         break;
     case 8:
         casillas[clickY][clickX].tex = boxEightTexture;
         casillas[clickY][clickX].revealed = true;
-        break;*/
+        contWin += 1;
+        break;
     default:
         casillas[clickY][clickX].tex = emptyBoxTexture;
+        contWin += 1;
         break;
     }
 }
@@ -547,11 +585,17 @@ void Game::menuHandleEvents()
             dificultad(eligeDif);
         }
         */
-        if (clickPos.x >= 0 && clickPos.x <= 30 && clickPos.y >= 0 && clickPos.y <= 30 && music == true)
+        if (clickPos.x >= 0 && clickPos.x <= 30 && clickPos.y >= 0 && clickPos.y <= 30)
         {
-            Mix_VolumeMusic(0);
-            music = false;
-            std::cout << "Music off " << std::endl;
+            if (music == true) 
+            {
+                Mix_VolumeMusic(0);
+                music = false;
+            }
+            else {
+                Mix_VolumeMusic(20);
+                music = true;
+            }
         }
         break;
     }
@@ -578,8 +622,8 @@ void Game::dificultad(int selectDif)
     case 3:
         // std::cout << "Case = " << selectDif << std::endl;
         b = 99;
-        f = 16;
-        c = 30;
+        f = 20;
+        c = 20;
         finMenu = 1;
         break;
         /*
@@ -623,4 +667,20 @@ void Game::renderButton(EntityButton &entityButton)
     dst.h = entityButton.getCurrentFrame().h;
 
     SDL_RenderCopy(renderer, entityButton.getTex(), &src, &dst);
+}
+
+void Game::sceneWin(){
+    SDL_Texture *sceneTexture = loadTexture("res/img/Menu/win.png");
+    EntityMenu scene(-30, 100, sceneTexture);
+    
+    SDL_Texture *menuTexture = loadTexture("res/img/Menu/menu.png");
+    EntityMenu menu(0, 0, menuTexture);
+
+
+    SDL_SetWindowSize(window, 800, 800);
+    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    clear();
+    renderMenu(menu);
+    renderMenu(scene);
+    display();
 }
