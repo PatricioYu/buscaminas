@@ -1,4 +1,5 @@
 #include <time.h>
+#include "windows.h"
 #include "headers/game.hpp"
 
 // Constructor de la clase Game
@@ -59,11 +60,9 @@ void Game::gameLoop()
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED); // centro la ventana luego de la eleccion de dificultad
 
     // Creo la matriz de casillas
-    for (int i = 0; i < f; i++)
-    {
+    for (int i = 0; i < f; i++){
         std::vector<Entity> casilla;
-        for (int j = 0; j < c; j++)
-        {
+        for (int j = 0; j < c; j++){
             Entity casilla1(32 * j, 32 * i, boxTexture);
             casilla.push_back(casilla1);
         }
@@ -193,8 +192,11 @@ void Game::handleEvents()
                 else if (casillas[clickPos.y / 32][clickPos.x / 32].mine == true)
                 {
                     std::cout << "Perdiste" << std::endl;
-                    cleanUp();
-                    gameState = GameState::EXIT;
+                    revealed();
+/*                     cleanUp();*/
+
+                    gameState = GameState::EXIT; 
+                    
                 }
                 numCasilla(clickPos.x / 32, clickPos.y / 32);
             }
@@ -233,6 +235,19 @@ void Game::handleEvents()
     }
 }
 
+//Revela las bombas de las casillas cuando pierde
+void Game::revealed(){
+    SDL_Texture *mineTexture = loadTexture("res/img/inGame/MinaTerrestre.png");
+
+    for(int i=0; i<c ; ++i){
+        for(int j=0; j<f; ++j){
+            if(casillas[i][j].mine == true){
+                casillas[i][j].tex = mineTexture;
+            }
+        }
+    }
+}
+
 void Game::timer()
 {
 
@@ -251,8 +266,7 @@ void Game::timer()
     time = now;
 
     std::cout << "Time = " << time/1000 << " segundos";
-    }
-
+}
 
 // Si es el primer click se activa el posicionamiento de las minas de forma aleatoria
 void Game::onFirstClick()
@@ -293,12 +307,12 @@ void Game::bombasAleat(const Pos &firstClickPos)
             } while (casillas[mineY[i]][mineX[i]].mine == true || (mineX[i] == firstClickPos.x / 32 && mineY[i] == firstClickPos.y / 32) || mineX[i] == firstClickPos.x / 32 + 1 || mineX[i] == firstClickPos.x / 32 - 1 || mineY[i] == firstClickPos.y / 32 + 1 || mineY[i] == firstClickPos.y / 32 - 1);
 
             casillas[mineY[i]][mineX[i]].mine = true;
-            casillas[mineY[i]][mineX[i]].tex = mineTexture;
+/*             casillas[mineY[i]][mineX[i]].tex = mineTexture; */
         }
         else
         {
             casillas[mineY[i]][mineX[i]].mine = true;
-            casillas[mineY[i]][mineX[i]].tex = mineTexture;
+/*             casillas[mineY[i]][mineX[i]].tex = mineTexture; */
         }
 
         // Cada bomba suma 1 al contador de las casillas adyacentes

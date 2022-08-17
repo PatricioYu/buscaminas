@@ -35,6 +35,7 @@ class Game {
         void bombasAleat(const Pos& firstClickPos);
         void contMasUno(int x, int y);
         void numCasilla(int clickX, int clickY);
+        void revealed();
         void timer();
 
     private:
